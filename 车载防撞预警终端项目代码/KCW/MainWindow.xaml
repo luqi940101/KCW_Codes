@@ -1,0 +1,122 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing" x:Class="WpfApplication4.MainWindow"
+        Title="MainWindow"  WindowStyle="None" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"  Height="600" Width="800" WindowState="Maximized">
+    <Grid Background="#FFC3E3F1" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="325"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <Grid Background="#FF00A2FF"  Grid.ColumnSpan="2">
+            <Label Content="KCW60机车防撞预警系统" HorizontalAlignment="Left" Margin="47,6.76,0,0" VerticalAlignment="Top" Foreground="White"/>
+            <Image Margin="14,4,0,4" Source="Logo.ico" Stretch="Fill" Width="32" Height="32" HorizontalAlignment="Left"/>
+        </Grid>
+        <Grid  Grid.Row="1" >
+            <StackPanel  Margin="-100,0,0,0" Orientation="Vertical" >
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+            </StackPanel>
+
+            <StackPanel  Margin="100,0,0,0"  Orientation="Vertical" >
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
+                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
+                <Ellipse Fill="Black" Height="38" Margin="231,0,10,0" Stroke="Black"/>
+                <Button Content="Button"/>
+                <Button Content="Button"/>
+            </StackPanel>
+            <Image Margin="10,10,0,0" Source="Image2.png" Stretch="Fill" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left" Width="30"/>
+            <ed:RegularPolygon x:Name ="Vehicle2" Fill="#FF80FF00" HorizontalAlignment="Left" Height="26" InnerRadius="1" PointCount="3" Stretch="Fill" Stroke="#FF46FF00" VerticalAlignment="Top" Width="28" Margin="236,218,0,0"/>
+            <ed:RegularPolygon  x:Name="Vehicle1"  Fill="Yellow" HorizontalAlignment="Left" Height="26" InnerRadius="1" PointCount="3" Stretch="Fill" Stroke="#FFFFE800" VerticalAlignment="Top" Width="28" Margin="135,39,0,0" RenderTransformOrigin="0.5,0.5">
+                <ed:RegularPolygon.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="179.231"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </ed:RegularPolygon.RenderTransform>
+            </ed:RegularPolygon>
+        </Grid>
+        <Image Source="1258567252218410.jpg" Stretch="Fill" Grid.Column="1" Grid.Row="1"  />
+
+        <Grid Grid.Row ="2"  Grid.ColumnSpan="2" Background="#FF9DE1F5">
+            <Image Source="Image1.png" Stretch="Fill" HorizontalAlignment="Left" Height="180" Width="180" Margin="10,10,0,10" />
+
+            <Label Content="速度" HorizontalAlignment="Left" Margin="222,27,0,0" VerticalAlignment="Top" Foreground="White" Height="26" Width="34"/>
+            <Label Content="位置" HorizontalAlignment="Left" Margin="222,64,0,0" VerticalAlignment="Top" Foreground="White" Height="26" Width="34"/>
+            <Label Content="方向" HorizontalAlignment="Left" Margin="222,104,0,0" VerticalAlignment="Top" Foreground="White" Height="26" Width="34"/>
+            <Label Content="轨道" HorizontalAlignment="Left" Margin="222,146,0,0" VerticalAlignment="Top" Foreground="White" Height="25" Width="34"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,27,0,0" TextWrapping="Wrap" Text="30km/h" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,64,0,0" TextWrapping="Wrap" Text="526米" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,104,0,0" TextWrapping="Wrap" Text="上行" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,146,0,0" TextWrapping="Wrap" Text="右轨" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+        </Grid>
+        <Grid Grid.Row ="2"  Grid.Column="1" Background="#FFEBF509">
+            <Label Content="速度" HorizontalAlignment="Left" Margin="222,26,0,0" VerticalAlignment="Top" Foreground="White" Height="26" Width="34"/>
+            <Label Content="位置" HorizontalAlignment="Left" Margin="222,63,0,0" VerticalAlignment="Top" Foreground="White" Height="26" Width="34"/>
+            <Label Content="方向" HorizontalAlignment="Left" Margin="222,103,0,0" VerticalAlignment="Top" Foreground="White" Height="26" Width="34"/>
+            <Label Content="轨道" HorizontalAlignment="Left" Margin="222,145,0,0" VerticalAlignment="Top" Foreground="White" Height="25" Width="34"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,27,0,0" TextWrapping="Wrap" Text="31km/h" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,63,0,0" TextWrapping="Wrap" Text="671米" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,103,0,0" TextWrapping="Wrap" Text="下行" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="261,145,0,0" TextWrapping="Wrap" Text="左轨" VerticalAlignment="Top" Width="104" VerticalContentAlignment="Center"/>
+            <Image Source="Image1.png" Stretch="Fill" HorizontalAlignment="Left" Height="180" Width="180" Margin="10,10,0,10" />
+            <Button Content="x" HorizontalAlignment="Left" Margin="361,-358,0,0" VerticalAlignment="Top" Width="20" Click="Button_Click" RenderTransformOrigin="1.245,0.537"/>
+        </Grid>
+        <Grid Background="#FF00A2FF"  Grid.Row="3" Grid.ColumnSpan="2">
+            <Label Content="中煤科工集团重庆研究院有限公司研制" Margin="0,6,18,0" VerticalAlignment="Top" Foreground="White" HorizontalAlignment="Right" Width="214"/>
+            <Label Content="2017-11-18  16:63:24" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Foreground="White"/>
+        </Grid>
+    </Grid>
+</Window>
