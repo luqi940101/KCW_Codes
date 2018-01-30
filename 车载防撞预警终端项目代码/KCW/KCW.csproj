@@ -35,6 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ADBases">
+      <HintPath>dll\ADBases.dll</HintPath>
+    </Reference>
+    <Reference Include="ADDevice">
+      <HintPath>dll\ADDevice.dll</HintPath>
+    </Reference>
+    <Reference Include="ADDeviceReader">
+      <HintPath>dll\ADDeviceReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ADWifi">
+      <HintPath>dll\ADWifi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -54,6 +66,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="SystemPub.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
