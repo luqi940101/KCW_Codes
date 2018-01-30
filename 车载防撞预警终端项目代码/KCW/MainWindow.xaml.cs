@@ -18,6 +18,7 @@ using ADSDK.Device.Reader;
 using ADSDK.Device.Reader.Passive;
 using System.IO;
 using System.IO.Ports;
+using System.Windows.Threading;
 
 
 
@@ -29,37 +30,106 @@ namespace WpfApplication4
     /// </summary>
     public partial class MainWindow : Window
     {
+        public bool IsDisposed { get; private set; }
+
         public MainWindow()
         {
             InitializeComponent();
-            
-            //tsmiConnect.Enabled = false;
-            //Application.DoEvents();
-            
-            SystemPub.ADSio = new ADCom();
-            if (SystemPub.ADSio.bConnected)
-            {
-                SystemPub.ADSio.DisConnect();
-               // m_bStopComm = true;
-            }
-            else
-            {
-              //  m_bStopComm = false;
-                SystemPub.ADRcp.Sio = SystemPub.ADSio;
-                SystemPub.ADSio.Connect(IniSettings.HostName, IniSettings.HostPort);
-              //  Application.DoEvents();
-                if (!SystemPub.ADSio.bConnected && IniSettings.Communication == IniSettings.CommType.NET) RFID_Com_Label.Foreground = Brushes.Red;
-                // Application.DoEvents();
-            }
+            SystemPub.ADRcp = new PassiveRcp();
+            SystemPub.ADRcp.RcpLogEventReceived += RcpLogEventReceived;
+            SystemPub.ADRcp.RxRspParsed += RxRspEventReceived;
+            InitCommunication();
             //Vehicle1.Stroke = Brushes.Red;
             //Vehicle1.Fill = Brushes.Red;
-            
-        }
-        
 
+        }
+
+        /*
+        #region ---DoEvents_Subtitution---
+           public static void DoEvents()
+        {
+             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                         new Action(delegate { }));
+        }
+        #endregion
+        */
+        #region ---Communication---
+        bool cAddNew = false;
+        public string ReaderMode = "";
+        private void InitCommunication()
+        {
+            UnInitCommunication();
+            //Serial Port Initialization
+            IniSettings.Communication = IniSettings.CommType.SERIAL;
+            IniSettings.PortName = "COM10";
+            IniSettings.BaudRate = 9600;
+            SystemPub.ADSio = new ADCom();
+            SystemPub.ADSio.StatusConnected += Instance_Connected;
+            SystemPub.ADRcp.Sio = SystemPub.ADSio;
+            cAddNew = true;
+        }
+        #endregion
+        private void UnInitCommunication()
+        {
+            if (!cAddNew) return;
+            SystemPub.ADSio.StatusConnected -= Instance_Connected;
+            cAddNew = false;
+        }
+
+        #region ---DoEvents_Subtitution---
+        public void DoEvents()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(ExitFrame), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
+        public object ExitFrame(object f)
+        {
+            ((DispatcherFrame)f).Continue = false;
+
+            return null;
+        }
+        #endregion
+
+        void RcpLogEventReceived(object sender, StringEventArg e)
+        {
+            DisplayMsgString(e.Data);
+        }
+
+        private void DisplayMsgString(string data)
+        {
+            throw new NotImplementedException();
+        }
+
+        void RxRspEventReceived(object sender, ProtocolEventArg e)
+        {
+            /*
+            if (this.IsDisposed)
+                return;
+
+            if (!this.InvokeRequired)
+            {
+                __ParseRsp(e.Protocol);
+                return;
+            }
+
+            this.Invoke(new MethodInvoker(delegate ()
+            {
+                __ParseRsp(e.Protocol);
+            }));
+            */
+        }
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             BtnClose.IsEnabled = false;
+           /*
+            if (SystemPub.ADSio.bConnected)
+            {
+                SystemPub.ADSio.DisConnect();
+            }
+            */
             System.Windows.Application.Current.Shutdown();
         }
         
@@ -68,7 +138,7 @@ namespace WpfApplication4
             BtnReadCard.IsEnabled = false;
             CardID.Text = "";
             //Application.DoEvents();
-              PassiveCommand.Identify6C(SystemPub.ADRcp);
+            PassiveCommand.Identify6C(SystemPub.ADRcp);
             //if (!SystemPub.ADRcp.SendBytePkt(PassiveRcp.Identify6C(SystemPub.ADRcp.Address))) { }
 
             //  Bt_Read_Card.Enabled = true;
@@ -78,6 +148,51 @@ namespace WpfApplication4
         {
 
         }
+
+        private bool m_bStopComm = false;
+        private void BtnConnect_Click(object sender, RoutedEventArgs e)
+        {
+            BtnConnect.IsEnabled = false;
+            DoEvents();
+            if (SystemPub.ADSio.bConnected)
+            {
+                SystemPub.ADSio.DisConnect();
+                m_bStopComm = true;
+            }
+            else
+            {
+
+                m_bStopComm = false;
+                SystemPub.ADRcp.Sio = SystemPub.ADSio;
+                SystemPub.ADSio.Connect(IniSettings.HostName, IniSettings.HostPort);
+                DoEvents();
+                //if (!SystemPub.ADSio.bConnected && IniSettings.Communication == IniSettings.CommType.NET) fwt.ShowDialog();
+                //DoEvents();
+            }
+            /*
+            //tsmiConnect.Enabled = false;
+            DoEvents();            
+            if (SystemPub.ADSio.bConnected)
+            {
+                SystemPub.ADSio.DisConnect();
+                // m_bStopComm = true;
+            }
+            else
+            {
+                //  m_bStopComm = false;
+                //SystemPub.ADRcp.Sio = SystemPub.ADSio;
+                SystemPub.ADSio.Connect(IniSettings.HostName, IniSettings.HostPort);
+             //   DoEvents();
+                //if (!SystemPub.ADSio.bConnected && IniSettings.Communication == IniSettings.CommType.NET) RFID_Com_Label.Foreground = Brushes.Red;
+                //DoEvents();
+            }
+            */
+        }
+        void Instance_Connected(object sender, ConnectEventArg e)
+        {
+            RFID_Com_Label.Foreground = Brushes.Red;
+        }
+
 
     }
 }
