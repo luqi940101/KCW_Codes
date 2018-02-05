@@ -1,20 +1,20 @@
 #include "Test_Function.h"
 
 
-Function::Function(void)
+Test_Function::Test_Function(void)
 {
 }
 
 
-Function::~Function(void)
+Test_Function::~Test_Function(void)
 {
 }
 
-int Function::menberFuncAdd(int a, int b)
+int Test_Function::menberFuncAdd(int a, int b)
 {
 	return a + b;
 }
-System::String^ Function::say(System::String^ str)
+System::String^ Test_Function::say(System::String^ str)
 {
 	return str;
 }

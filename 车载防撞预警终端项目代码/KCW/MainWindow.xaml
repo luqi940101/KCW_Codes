@@ -18,7 +18,7 @@
             <Label Content="KCW60机车防撞预警系统" HorizontalAlignment="Left" Margin="47,6.76,0,0" VerticalAlignment="Top" Foreground="White"/>
             <Image Margin="14,4,0,4" Source="Logo.ico" Stretch="Fill" Width="32" Height="32" HorizontalAlignment="Left"/>
             <Button Name="BtnClose" Content="x" HorizontalAlignment="Left" Margin="775,10,0,0" VerticalAlignment="Top" Width="20" Click="BtnClose_Click"/>
-            <TextBox Name ="CardID" HorizontalAlignment="Left" Height="23" Margin="358,9,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="407" TextChanged="CardID_TextChanged"/>
+            <TextBox Name ="CardID" HorizontalAlignment="Left" Height="23" Margin="358,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="407" TextChanged="CardID_TextChanged"/>
             <Button Name="BtnStartRead" Content="Start Read" HorizontalAlignment="Left" Margin="274,10,0,0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="0.893,0.42" Click="BtnStartRead_Click"/>
         </Grid>
         <Grid  Grid.Row="1" >
@@ -118,7 +118,7 @@
         </Grid>
         <Grid Background="#FF00A2FF"  Grid.Row="3" Grid.ColumnSpan="2">
             <Label Content="中煤科工集团重庆研究院有限公司研制" Margin="0,6,18,0" VerticalAlignment="Top" Foreground="White" HorizontalAlignment="Right" Width="214"/>
-            <Label Content="2017-11-18  16:63:24" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Foreground="White"/>
+            <Label Content="2017-11-18  16:53:24" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Foreground="White"/>
         </Grid>
         <Button x:Name ="BtnConnect" Content="Connect" HorizontalAlignment="Left" Margin="192,10,0,0" VerticalAlignment="Top" Width="75" Click="BtnConnect_Click" RenderTransformOrigin="1.01,0.526"/>
     </Grid>

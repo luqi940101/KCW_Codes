@@ -1,12 +1,11 @@
 #pragma once
 #include <string>
-public ref class Test_Function
+public ref class Function
 {
 public:
-	Test_Function(void);
-	~Test_Function(void);
+	Function(void);
+	~Function(void);
 	int menber;
 	int menberFuncAdd(int a, int b);
 	System::String^ say(System::String^ str);
 };
-

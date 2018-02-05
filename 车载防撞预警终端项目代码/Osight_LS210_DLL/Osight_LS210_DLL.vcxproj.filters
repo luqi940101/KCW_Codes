@@ -15,12 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Test_Function.h">
+    <ClInclude Include="LSxxx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ls_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test_Function.cpp">
+    <ClCompile Include="LSxxx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Function.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

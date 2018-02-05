@@ -11,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
 using ADSDK.Bases;
 using ADSDK.Device;
 using ADSDK.Device.Reader;
@@ -37,6 +36,7 @@ namespace WpfApplication4
         public MainWindow()
         {
             InitializeComponent();
+                     
             SystemPub.ADRcp = new PassiveRcp();
             SystemPub.ADRcp.RcpLogEventReceived += RcpLogEventReceived;
             SystemPub.ADRcp.RxRspParsed += RxRspEventReceived;
@@ -46,6 +46,7 @@ namespace WpfApplication4
             dispatcherTimer.Start();
 
             InitCommunication();
+            BtnStartRead.IsEnabled = false;
             //Vehicle1.Stroke = Brushes.Red;
             //Vehicle1.Fill = Brushes.Red;
             
@@ -57,15 +58,9 @@ namespace WpfApplication4
 
         }
 
-        /*
-        #region ---DoEvents_Subtitution---
-           public static void DoEvents()
-        {
-             Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                         new Action(delegate { }));
-        }
-        #endregion
-        */
+  
+        #region ---RFID Reader---
+        
         #region ---ThreadReadInfo----
         private bool m_bStopComm = true;
         private bool m_bAlive = false;
@@ -424,6 +419,7 @@ namespace WpfApplication4
                             //RFID_Com_Label.Foreground = Brushes.Red;
                             BtnConnect.Content = "Disconnect";
                             BtnConnect.Foreground = Brushes.Red;
+                            BtnStartRead.IsEnabled = true;
                         }
                         else if (e.Status == CommState.CONNECT_FAIL)
                         {
@@ -577,6 +573,101 @@ namespace WpfApplication4
                 //PassiveCommand.Identify6CMult(SystemPub.ADRcp);
             }
         }
-        
+        #endregion
+
+
+        //private void Btn_Add_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Test_Function fun = new Test_Function();
+        //    MessageBox.Show(Convert.ToString(fun.menberFuncAdd(4, 5)));
+        //}
+
+        #region ---LS210 Lidar---
+        void LS210(LSxxx laser, string hostPC, UInt32 portPC, byte IntensityStatus, byte[] pAlarmPara)
+        {
+
+            byte err;
+            byte i = 0;
+
+            //std::string hostPC="192.168.1.100";
+            //BITS32  portPC=5500;
+
+            while (true)
+            {
+                laser.connect(hostPC, portPC);
+                if (!laser.isConnected())
+                {
+                    continue;
+                }
+                MessageBox.Show("Network connection OK \r\n");
+
+
+                do
+                {
+                    err = laser.ParaSync();
+                } while (0 != err);
+                MessageBox.Show("Parameter synchronization OK\r\n");
+
+                //g_stRealPara.ucIntensityStatus = 0;
+                //g_stRealPara.ucIntensityStatus = 1;
+                //g_stRealPara.ucIntensityStatus = 2;
+
+                g_stRealPara.ucIntensityStatus = IntensityStatus;
+
+                //Alarm Area Para
+                if ((0x00 != pAlarmPara[0]) || (0x00 != pAlarmPara[1]) || (0x00 != pAlarmPara[2]) || (0x00 != pAlarmPara[3]) || (0x00 != pAlarmPara[4]))
+                {
+                    g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType = pAlarmPara[1];
+                    //printf("pAlarmPara[0]=%d\r\n",pAlarmPara[0]);
+                    //printf("g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType=%d\r\n",g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType);
+                    for (i = 0; i < 19; i++)
+                    {
+                        g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i] = pAlarmPara[i + 2];
+                        //printf("g_stRealPara.stAlarmArea[%d].aucPara[%d]=%d\r\n",pAlarmPara[0],i,g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i]);
+                    }
+                }
+
+                do
+                {
+                    err = laser.ParaConfiguration();
+                } while (0 != err);
+                MessageBox.Show("Parameter configuration OK\r\n");
+
+                laser.StartMeasureTransmission();
+
+
+                MessageBox.Show("Start getting the Measurements ...\r\n");
+                while (1)
+                {
+                    err = laser.GetLidarMeasData();
+                    if (0 == err)
+                    {
+                        /*test: Print receiving ridar data */
+                        for (int i = 0; i < 1080; i++)
+                        {
+                            //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
+                            //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
+                            //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
+                            //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
+                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+                            //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+                            //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+                        }
+
+                    }
+                    else
+                    {
+                        //break;
+                    }
+
+                }
+
+            }
+
+
+        }
+        #endregion
     }
+
 }
