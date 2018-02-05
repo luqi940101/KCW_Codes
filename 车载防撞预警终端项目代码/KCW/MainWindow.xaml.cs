@@ -20,7 +20,7 @@ using System.IO.Ports;
 using System.Windows.Threading;
 using System.Threading;
 using System.Timers;
-
+using System.Runtime.InteropServices;
 
 namespace WpfApplication4
 {
@@ -583,18 +583,26 @@ namespace WpfApplication4
         //}
 
         #region ---LS210 Lidar---
-        void LS210(LSxxx laser, string hostPC, UInt32 portPC, byte IntensityStatus, byte[] pAlarmPara)
+        void LS210(LSxxx laser, string hostPC, Int32 portPC, byte IntensityStatus, byte[] pAlarmPara)
         {
 
             byte err;
             byte i = 0;
-
+            
             //std::string hostPC="192.168.1.100";
             //BITS32  portPC=5500;
 
+
+
             while (true)
             {
-                laser.connect(hostPC, portPC);
+                unsafe
+                {
+                    IntPtr intPtrStr = (IntPtr)Marshal.StringToHGlobalAnsi(hostPC);
+                    sbyte* hostPC_sbyteStr = (sbyte*)intPtrStr;
+                    laser.connect(hostPC_sbyteStr, portPC);
+                }
+                
                 if (!laser.isConnected())
                 {
                     continue;

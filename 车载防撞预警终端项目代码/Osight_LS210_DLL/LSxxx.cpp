@@ -56,14 +56,14 @@ LSxxx::~LSxxx()
 {
 }
 
-INT32 LSxxx::connect(std::string hostPC, int portPC)
+INT32 LSxxx::connect(char* hostPC, int portPC)
 {
 	/* UDP */
 	/* server  */
 	//	bzero(&server_addr, sizeof(server_addr));
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
-	inet_pton(AF_INET, hostPC.c_str(), &server_addr.sin_addr);
+	inet_pton(AF_INET, hostPC, &server_addr.sin_addr);
 	server_addr.sin_port = htons(portPC);
 
 	/* client */
@@ -142,7 +142,7 @@ INT32 LSxxx::read_data(void* vpSrc, BITS16 usCnt)
 	//return recvfrom(server_socket_fd, (char*)vpSrc, usCnt, 0, (struct sockaddr*)&client_addr, &client_addr_length);
 }
 
-INT32 LSxxx::ParaSync(LSxxx laser, PARA_SYNC_RSP g_stRealPara)
+INT32 LSxxx::ParaSync(PARA_SYNC_RSP g_stRealPara)
 {
 	BITS8  ucCount = 30;
 	INT32  ulSendLength = 0;
@@ -154,11 +154,11 @@ INT32 LSxxx::ParaSync(LSxxx laser, PARA_SYNC_RSP g_stRealPara)
 	stParaSynReq.usTransId = 0x0505;
 	printf("Parameter synchronization start\r\n");
 	memset(g_aucTxBuf, 0, sizeof(g_aucTxBuf));
-	ulSendLength = laser.PackParaSyncReq(&stParaSynReq, g_aucTxBuf);
+	ulSendLength = PackParaSyncReq(&stParaSynReq, g_aucTxBuf);
 
 	if (ulSendLength > VALUE_0)
 	{
-		laser.send_data(g_aucTxBuf, ulSendLength);
+		send_data(g_aucTxBuf, ulSendLength);
 	}
 
 	memset((BITS8*)&stParaSynRsp, 0, sizeof(PARA_SYNC_RSP));
@@ -167,7 +167,7 @@ INT32 LSxxx::ParaSync(LSxxx laser, PARA_SYNC_RSP g_stRealPara)
 	ulSendLength = 0;
 	while (ucCount--)
 	{
-		ulSendLength = laser.read_data(g_aucRxBuf, sizeof(stParaSynRsp));
+		ulSendLength = read_data(g_aucRxBuf, sizeof(stParaSynRsp));
 		if (ulSendLength > VALUE_0)
 		{
 			ulMsgId = NULL_MSGID;
@@ -176,7 +176,7 @@ INT32 LSxxx::ParaSync(LSxxx laser, PARA_SYNC_RSP g_stRealPara)
 
 			if (PARA_SYNC_RSP_ID == ulMsgId)
 			{
-				laser.UnpackParaSyncRsp((BITS8 *)&g_aucRxBuf, (PARA_SYNC_RSP *)&stParaSynRsp);
+				UnpackParaSyncRsp((BITS8 *)&g_aucRxBuf, (PARA_SYNC_RSP *)&stParaSynRsp);
 				memcpy((BITS8*)&g_stRealPara, (BITS8*)&stParaSynRsp, sizeof(PARA_SYNC_RSP));
 
 				return BUSPRO_OK;

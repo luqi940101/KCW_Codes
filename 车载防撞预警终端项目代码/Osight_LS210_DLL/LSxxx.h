@@ -25,13 +25,13 @@ public ref class LSxxx
 public:
 	LSxxx();
 	virtual ~LSxxx();
-	INT32 connect(std::string host, int port);
+	INT32 connect(char* hostPC, int portPC);
 	void disconnect();
 	bool isConnected();
 	void   send_data(void* vpSrc, BITS16 usCnt);
 	INT32 read_data(void* vpSrc, BITS16 usCnt);
 
-	INT32 ParaSync(LSxxx laser, PARA_SYNC_RSP g_stRealPara);
+	INT32 ParaSync(PARA_SYNC_RSP g_stRealPara);
 	INT32 ParaConfiguration(LSxxx laser, PARA_SYNC_RSP g_stRealPara);
 	void  StartMeasureTransmission(LSxxx laser);
 	INT32 GetLidarMeasData(LSxxx laser, PARA_SYNC_RSP g_stRealPara, MEAS_DATA_NO_INTENSITY g_stMeasDataNoIntensity, MEAS_DATA_HAVE_INTENSITY1   g_stMeasDataHaveIntensity1, MEAS_DATA_HAVE_INTENSITY2   g_stMeasDataHaveIntensity2);
