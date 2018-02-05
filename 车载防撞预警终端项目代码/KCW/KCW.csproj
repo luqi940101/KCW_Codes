@@ -48,6 +48,9 @@
       <HintPath>dll\ADWifi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
+    <Reference Include="Osight_LS210_DLL">
+      <HintPath>..\Debug\Osight_LS210_DLL.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />

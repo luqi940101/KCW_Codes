@@ -42,7 +42,7 @@ namespace WpfApplication4
             SystemPub.ADRcp.RxRspParsed += RxRspEventReceived;
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 20);
             dispatcherTimer.Start();
 
             InitCommunication();
@@ -67,7 +67,7 @@ namespace WpfApplication4
         #endregion
         */
         #region ---ThreadReadInfo----
-        private bool m_bStopComm = false;
+        private bool m_bStopComm = true;
         private bool m_bAlive = false;
 
         private System.Threading.Thread monThread = null;
@@ -253,8 +253,20 @@ namespace WpfApplication4
                         SystemPub.ADRcp.Type = strInfo.Substring(17, 1);
                         SystemPub.ADRcp.Mode = strInfo.Substring(18, 1);
                         SystemPub.ADRcp.Version = strInfo.Substring(19, 5);
-                     //   MessageBox.Show(strInfo.Substring(29, 5));
-                        SystemPub.ADRcp.Address = Convert.ToInt32(strInfo.Substring(29, 5));
+                        //   MessageBox.Show(strInfo.Substring(29, 5));
+                        bool canConvert = int.TryParse(strInfo.Substring(29, 5), out SystemPub.ADRcp.Address);
+                        if (canConvert == true)
+                        { }
+                        else {
+                            SystemPub.ADSio.DisConnect();
+                            InitCommunication();
+                            m_bStopComm = true;
+                            BtnConnect.Content = "Connect";
+                            BtnConnect.Foreground = Brushes.Black;
+                            BtnStartRead.Content = "Start Read";
+                        }
+                            
+                        //SystemPub.ADRcp.Address = Convert.ToInt32(strInfo.Substring(29, 5));
 
                         if (SystemPub.ADRcp.Type != "W" && SystemPub.ADRcp.Type != "T")
                             SystemPub.ADRcp.Type = "C";
@@ -332,25 +344,29 @@ namespace WpfApplication4
 
                             }
                     break;
-                case PassiveRcp.RCP_CMD_EPC_MULT:
-                case PassiveRcp.RCP_CMD_ISO6B_IDEN:
-                    if (Data.Length > 0 && (Data.Type == 0 || Data.Type == 0x32))
-                    {
-                        CardID.Text = ConvertData.ByteArrayToHexString(Data.Payload, 1, Data.Length - 1);
-                    }
-                    break;
-                case 0x22:
-                    Data.Code = 0x10;
-                    Data.Type = 0x32;
-                    List<CardParameters> tempArray2 = new List<CardParameters>();
-                    List<byte> bytTempArray2 = new List<byte>(Data.ToArray());
-                    if (PDataManage.InputManage(ref bytTempArray2, ref tempArray2))
-                    {
-                        //cdgvShow.Add(tempArray2);
-                        MessageBox.Show("Not Handled");
-             
-                    }
-                    break;
+                    /*
+                    case PassiveRcp.RCP_CMD_EPC_MULT:
+                    case PassiveRcp.RCP_CMD_ISO6B_IDEN:
+                        if (Data.Length > 0 && (Data.Type == 0 || Data.Type == 0x32))
+                        {
+                            CardID.Text = ConvertData.ByteArrayToHexString(Data.Payload, 1, Data.Length - 1);
+                        }
+                        break;
+                    case 0x22:
+                        Data.Code = 0x10;
+                        Data.Type = 0x32;
+                        List<CardParameters> tempArray2 = new List<CardParameters>();
+                        List<byte> bytTempArray2 = new List<byte>(Data.ToArray());
+                        if (PDataManage.InputManage(ref bytTempArray2, ref tempArray2))
+                        {
+                            //cdgvShow.Add(tempArray2);
+                            MessageBox.Show("Not Handled");
+
+                        }
+                        break;
+                            */
+
+
             }
 
         }
@@ -405,7 +421,9 @@ namespace WpfApplication4
                             // DisplayMsgString("CONNECT> Connect Succeed...   " + "(" + SystemPub.ADSio.ToString() + ")\r\n");
                             //tsmiConnect.Text = IniSettings.GetLanguageString("DIS&CONNECT", "断开(&C)");
                             StartReadInfo();
-                            RFID_Com_Label.Foreground = Brushes.Red;
+                            //RFID_Com_Label.Foreground = Brushes.Red;
+                            BtnConnect.Content = "Disconnect";
+                            BtnConnect.Foreground = Brushes.Red;
                         }
                         else if (e.Status == CommState.CONNECT_FAIL)
                         {
@@ -468,15 +486,15 @@ namespace WpfApplication4
             System.Windows.Application.Current.Shutdown();
         }
         
-        private void BtnReadCard_Click(object sender, RoutedEventArgs e)
-        {
-            BtnReadCard.IsEnabled = false;
-            CardID.Text = "";
-            //Application.DoEvents();
-            PassiveCommand.Identify6C(SystemPub.ADRcp);
-            //if (!SystemPub.ADRcp.SendBytePkt(PassiveRcp.Identify6C(SystemPub.ADRcp.Address))) { }
-            BtnReadCard.IsEnabled = true;
-        }
+        //private void BtnReadCard_Click(object sender, RoutedEventArgs e)
+        //{
+        //    BtnReadCard.IsEnabled = false;
+        //    CardID.Text = "";
+        //    //Application.DoEvents();
+        //    PassiveCommand.Identify6C(SystemPub.ADRcp);
+        //    //if (!SystemPub.ADRcp.SendBytePkt(PassiveRcp.Identify6C(SystemPub.ADRcp.Address))) { }
+        //    BtnReadCard.IsEnabled = true;
+        //}
 
         private void CardID_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -485,13 +503,16 @@ namespace WpfApplication4
 
        private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-            BtnConnect.IsEnabled = false;
+           // BtnConnect.IsEnabled = false;
             DoEvents();
             if (SystemPub.ADSio.bConnected)
             {
                 SystemPub.ADSio.DisConnect();
                 InitCommunication();
                 m_bStopComm = true;
+                BtnConnect.Content = "Connect";
+                BtnConnect.Foreground = Brushes.Black;
+                BtnStartRead.Content = "Start Read";
             }
             else
             {
@@ -530,7 +551,8 @@ namespace WpfApplication4
         bool IsStart = false;
         private void BtnStartRead_Click(object sender, RoutedEventArgs e)
         {
-            IsStart = !IsStart;
+            if (!m_bStopComm) IsStart = !IsStart;
+            else MessageBox.Show("Please Connect First");
             if (!IsStart)
             {
                 BtnStartRead.Content = "Start Read";
@@ -546,7 +568,7 @@ namespace WpfApplication4
                 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (IsStart)
+            if (IsStart & !m_bStopComm)
             {
                 DoEvents();
                 //CardID.Text = "";
