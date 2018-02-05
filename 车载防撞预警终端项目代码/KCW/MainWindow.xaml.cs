@@ -19,8 +19,8 @@ using ADSDK.Device.Reader.Passive;
 using System.IO;
 using System.IO.Ports;
 using System.Windows.Threading;
-
-
+using System.Threading;
+using System.Timers;
 
 
 namespace WpfApplication4
@@ -28,9 +28,11 @@ namespace WpfApplication4
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
+    /// 
+
     public partial class MainWindow : Window
     {
-        public bool IsDisposed { get; private set; }
+        //public bool IsDisposed { get; private set; }
 
         public MainWindow()
         {
@@ -38,9 +40,20 @@ namespace WpfApplication4
             SystemPub.ADRcp = new PassiveRcp();
             SystemPub.ADRcp.RcpLogEventReceived += RcpLogEventReceived;
             SystemPub.ADRcp.RxRspParsed += RxRspEventReceived;
+            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+            dispatcherTimer.Start();
+
             InitCommunication();
             //Vehicle1.Stroke = Brushes.Red;
             //Vehicle1.Fill = Brushes.Red;
+            
+           
+            
+            // dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            // dispatcherTimer.Interval = new TimeSpan(0,5,0);
+            //  dispatcherTimer.Start();
 
         }
 
@@ -98,7 +111,7 @@ namespace WpfApplication4
 
             System.Console.WriteLine(" End ThreadReadInfo()");
         }
-
+/*
         int mPortIndex = 0;
         string[] mPortNameArray;
         private void GetPortName()
@@ -122,7 +135,7 @@ namespace WpfApplication4
             if (mPortIndex >= mPortNameArray.Length) mPortIndex = 0;
             return mPortNameArray[mPortIndex];
         }
-
+*/
         private void SwitchPortAndBaud()
         {
             if (IniSettings.Communication == IniSettings.CommType.SERIAL)
@@ -210,8 +223,8 @@ namespace WpfApplication4
 
         void RxRspEventReceived(object sender, ProtocolEventArg e)
         {
-            if (this.IsDisposed)
-                return;
+            //if (this.IsDisposed)
+            //    return;
 
             if (this.Dispatcher.CheckAccess())
             {
@@ -233,13 +246,14 @@ namespace WpfApplication4
                 case PassiveRcp.RCP_CMD_INFO:
                     if (Data.Length > 0 && Data.Type == 0)
                     {
-                    //    m_bAlive = true;
+                       m_bAlive = true;
                         #region ---Parameter---
                         string strInfo = Encoding.ASCII.GetString(Data.Payload, 0, Data.Length);
 
                         SystemPub.ADRcp.Type = strInfo.Substring(17, 1);
                         SystemPub.ADRcp.Mode = strInfo.Substring(18, 1);
                         SystemPub.ADRcp.Version = strInfo.Substring(19, 5);
+                     //   MessageBox.Show(strInfo.Substring(29, 5));
                         SystemPub.ADRcp.Address = Convert.ToInt32(strInfo.Substring(29, 5));
 
                         if (SystemPub.ADRcp.Type != "W" && SystemPub.ADRcp.Type != "T")
@@ -317,6 +331,25 @@ namespace WpfApplication4
                                 CardID.Text = ConvertData.ByteArrayToHexString(Data.Payload, 1, Data.Length - 1);
 
                             }
+                    break;
+                case PassiveRcp.RCP_CMD_EPC_MULT:
+                case PassiveRcp.RCP_CMD_ISO6B_IDEN:
+                    if (Data.Length > 0 && (Data.Type == 0 || Data.Type == 0x32))
+                    {
+                        CardID.Text = ConvertData.ByteArrayToHexString(Data.Payload, 1, Data.Length - 1);
+                    }
+                    break;
+                case 0x22:
+                    Data.Code = 0x10;
+                    Data.Type = 0x32;
+                    List<CardParameters> tempArray2 = new List<CardParameters>();
+                    List<byte> bytTempArray2 = new List<byte>(Data.ToArray());
+                    if (PDataManage.InputManage(ref bytTempArray2, ref tempArray2))
+                    {
+                        //cdgvShow.Add(tempArray2);
+                        MessageBox.Show("Not Handled");
+             
+                    }
                     break;
             }
 
@@ -442,8 +475,7 @@ namespace WpfApplication4
             //Application.DoEvents();
             PassiveCommand.Identify6C(SystemPub.ADRcp);
             //if (!SystemPub.ADRcp.SendBytePkt(PassiveRcp.Identify6C(SystemPub.ADRcp.Address))) { }
-
-            //  Bt_Read_Card.Enabled = true;
+            BtnReadCard.IsEnabled = true;
         }
 
         private void CardID_TextChanged(object sender, TextChangedEventArgs e)
@@ -495,5 +527,34 @@ namespace WpfApplication4
         {
 
         }
+        bool IsStart = false;
+        private void BtnStartRead_Click(object sender, RoutedEventArgs e)
+        {
+            IsStart = !IsStart;
+            if (!IsStart)
+            {
+                BtnStartRead.Content = "Start Read";
+            }
+            else
+            {
+                BtnStartRead.Content = "Stop Read";
+            }
+
+            
+            
+        }
+                
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            if (IsStart)
+            {
+                DoEvents();
+                //CardID.Text = "";
+                //Application.DoEvents();
+                PassiveCommand.Identify6C(SystemPub.ADRcp);
+                //PassiveCommand.Identify6CMult(SystemPub.ADRcp);
+            }
+        }
+        
     }
 }

@@ -17,9 +17,11 @@
         <Grid Background="#FF00A2FF"  Grid.ColumnSpan="2">
             <Label Content="KCW60机车防撞预警系统" HorizontalAlignment="Left" Margin="47,6.76,0,0" VerticalAlignment="Top" Foreground="White"/>
             <Image Margin="14,4,0,4" Source="Logo.ico" Stretch="Fill" Width="32" Height="32" HorizontalAlignment="Left"/>
-            <Button Name="BtnClose" Content="x" HorizontalAlignment="Left" Margin="766,11,0,0" VerticalAlignment="Top" Width="20" Click="BtnClose_Click"/>
-            <Button Name="BtnReadCard" Content="Read Card" Click="BtnReadCard_Click" HorizontalAlignment="Left" Margin="212,10,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.656,0.179"/>
-            <TextBox Name ="CardID" HorizontalAlignment="Left" Height="23" Margin="303,9,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="407" TextChanged="CardID_TextChanged"/>
+            <Button Name="BtnClose" Content="x" HorizontalAlignment="Left" Margin="775,10,0,0" VerticalAlignment="Top" Width="20" Click="BtnClose_Click"/>
+            <Button Name="BtnReadCard" Content="Read Card" Click="BtnReadCard_Click" HorizontalAlignment="Left" Margin="279,10,0,0" VerticalAlignment="Top" Width="70
+                    " RenderTransformOrigin="-0.656,0.179"/>
+            <TextBox Name ="CardID" HorizontalAlignment="Left" Height="23" Margin="358,9,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="407" TextChanged="CardID_TextChanged"/>
+            <Button Name="BtnStartRead" Content="Start Read" HorizontalAlignment="Left" Margin="196,10,0,0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="0.893,0.42" Click="BtnStartRead_Click"/>
         </Grid>
         <Grid  Grid.Row="1" >
             <StackPanel  Margin="-100,0,0,0" Orientation="Vertical" >
@@ -122,7 +124,6 @@
             <Button Name ="BtnConnect" Content="Connect" HorizontalAlignment="Left" Margin="143,6,0,0" VerticalAlignment="Top" Width="75" Click="BtnConnect_Click"/>
             <TextBox Name ="Status" HorizontalAlignment="Left" Height="23" Margin="234,6,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="168" TextChanged="Status_TextChanged"/>
         </Grid>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
         <Label Name="RFID_Com_Label" Content="RFID Reader Connected" HorizontalAlignment="Left" Margin="10,6.2,0,0" Grid.Row="3" VerticalAlignment="Top" Grid.Column="1" />
     </Grid>
 </Window>
