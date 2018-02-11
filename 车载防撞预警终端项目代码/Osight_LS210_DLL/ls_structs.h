@@ -18,27 +18,27 @@
 #define BUSPRO_ERROR_CROSS_LINE  -2 
 #define BUSPRO_ERROR_POINTER     -3 
 
-//typedef	  char                  INT8;
-typedef	  short                INT16;
-typedef	  int                  INT32;
-typedef	  unsigned char        UINT8;
-typedef	  unsigned short       UINT16;
-typedef	  unsigned int         UINT32;
-typedef   long long 	       INT64;
-typedef	  unsigned long long   UINT64;
-typedef	  char	               CHAR;
-typedef	  short                SHORT;
-typedef	  long                 LONG;
-typedef	  unsigned char	       UCHAR;
-typedef   unsigned short	   USHORT;
-typedef	  unsigned int	       UINT;
-typedef   unsigned long	       ULONG;
-typedef   unsigned long long   ULLONG;
-typedef   UINT8                BITS8;
-typedef   UINT16               BITS16;
-typedef   UINT32               BITS32;
-typedef   double               DOUBLE;
-typedef   float                FLOAT;
+////typedef	  char                  INT8;
+//typedef	  short                INT16;
+//typedef	  int                  INT32;
+//typedef	  unsigned char        UINT8;
+//typedef	  unsigned short       UINT16;
+//typedef	  unsigned int         UINT32;
+//typedef   long long 	       INT64;
+//typedef	  unsigned long long   UINT64;
+//typedef	  char	               CHAR;
+//typedef	  short                SHORT;
+//typedef	  long                 LONG;
+//typedef	  unsigned char	       UCHAR;
+//typedef   unsigned short	   USHORT;
+//typedef	  unsigned int	       UINT;
+//typedef   unsigned long	       ULONG;
+//typedef   unsigned long long   ULLONG;
+//typedef   UINT8                UINT8;
+//typedef   UINT16               UINT16;
+//typedef   UINT32               UINT32;
+//typedef   double               DOUBLE;
+//typedef   float                FLOAT;
 
 
 #define PARA_SYNC_REQ_ID                            0xDDDDDD01  
@@ -66,12 +66,12 @@ typedef   float                FLOAT;
 #define NTOHL(x)    ((((x) & 0x000000FF) << 24)|(((x) & 0x0000FF00) << 8)|(((x) & 0x00FF0000) >> 8)|(((x) & 0xFF000000) >> 24))
 
 #define PACK_1_BYTE(pucBuff, ucData)   {*pucBuff = ucData; pucBuff++;}
-#define PACK_2_BYTE(pucBuff, usData)   {*(BITS16*)pucBuff = HTONS(usData); pucBuff += sizeof(BITS16);}
-#define PACK_4_BYTE(pucBuff, ulData)   {*(BITS32*)pucBuff = HTONL(ulData); pucBuff += sizeof(BITS32);}
+#define PACK_2_BYTE(pucBuff, usData)   {*(UINT16*)pucBuff = HTONS(usData); pucBuff += sizeof(UINT16);}
+#define PACK_4_BYTE(pucBuff, ulData)   {*(UINT32*)pucBuff = HTONL(ulData); pucBuff += sizeof(UINT32);}
 
 #define UNPACK_1_BYTE(pucBuff, ucData) {ucData = *pucBuff; pucBuff++;}
-#define UNPACK_2_BYTE(pucBuff, usData) {usData = NTOHS(*(BITS16*)pucBuff); pucBuff += sizeof(BITS16);}
-#define UNPACK_4_BYTE(pucBuff, ulData) {ulData = NTOHL(*(BITS32*)pucBuff); pucBuff += sizeof(BITS32);}
+#define UNPACK_2_BYTE(pucBuff, usData) {usData = NTOHS(*(UINT16*)pucBuff); pucBuff += sizeof(UINT16);}
+#define UNPACK_4_BYTE(pucBuff, ulData) {ulData = NTOHL(*(UINT32*)pucBuff); pucBuff += sizeof(UINT32);}
 
 #define VALUE    (-1)
 #define VALUE_0  (0)
@@ -112,158 +112,158 @@ typedef   float                FLOAT;
 
 typedef struct
 {
-	BITS8  ucAreaType;
-	BITS8  aucPara[19];
+	UINT8  ucAreaType;
+	UINT8  aucPara[19];
 }ALARM_AREA_INFO;
 
 
 typedef struct
 {
-	BITS32 ulMsgId;
-	BITS16 usTransId;
+	UINT32 ulMsgId;
+	UINT16 usTransId;
 }PARA_SYNC_REQ;
 
 typedef struct
 {
-	BITS32            ulMsgId;
-	BITS16            usTransId;
-	BITS8             aucMAC[VALUE_6];
-	BITS32            ulSerialNum1;
-	BITS32            ulSerialNum2;
-	BITS8             ucDevNum;
-	BITS8             ucSoftwareVersion;
-	BITS8             ucIndex;
-	BITS8             ucLineNum;
-	BITS32            ulStartAngle;
-	BITS16            usVerticalAngle;
-	BITS16            usMaxDistance;
-	BITS32            ulPointNum;
-	BITS8             aucReserved[6];
-	BITS8             ucCurrentSpeed;
-	BITS8             ucIntensityStatus;
-	BITS8             ucCurrentAreaId;
-	BITS32            ulAngularResolution;
+	UINT32            ulMsgId;
+	UINT16            usTransId;
+	UINT8             aucMAC[6];
+	UINT32            ulSerialNum1;
+	UINT32            ulSerialNum2;
+	UINT8             ucDevNum;
+	UINT8             ucSoftwareVersion;
+	UINT8             ucIndex;
+	UINT8             ucLineNum;
+	UINT32            ulStartAngle;
+	UINT16            usVerticalAngle;
+	UINT16            usMaxDistance;
+	UINT32            ulPointNum;
+	UINT8             aucReserved[6];
+	UINT8             ucCurrentSpeed;
+	UINT8             ucIntensityStatus;
+	UINT8             ucCurrentAreaId;
+	UINT32            ulAngularResolution;
 	ALARM_AREA_INFO   stAlarmArea[16];
 }PARA_SYNC_RSP;
 
 typedef struct
 {
-	BITS32            ulMsgId;
-	BITS16            usTransId;
-	BITS8             aucReserved[21];
-	BITS8             ucCurrentSpeed;
-	BITS8             ucIntensityStatus;
-	BITS8             ucCurrentAreaId;
-	BITS32            ulAngularResolution;
+	UINT32            ulMsgId;
+	UINT16            usTransId;
+	UINT8             aucReserved[21];
+	UINT8             ucCurrentSpeed;
+	UINT8             ucIntensityStatus;
+	UINT8             ucCurrentAreaId;
+	UINT32            ulAngularResolution;
 	ALARM_AREA_INFO   stAlarmArea[16];
 }PARA_CONFIGURATION_REQ;
 
 typedef struct
 {
-	BITS32 ulMsgId;
-	BITS16 usTransId;
-	BITS8  ucResult;
+	UINT32 ulMsgId;
+	UINT16 usTransId;
+	UINT8  ucResult;
 }PARA_CONFIGURATION_RSP;
 
 
 typedef struct
 {
-	BITS32 ulMsgId;
-	BITS8   ucStart;
+	UINT32 ulMsgId;
+	UINT8   ucStart;
 }START_MEASURE_TRANSMISSION_REQ;
 
 
 typedef struct
 {
-	BITS32 ulDistance;
+	UINT32 ulDistance;
 }POINT0;
 
 typedef struct
 {
-	BITS32 ulDistance;
-	BITS8  ucIntensity;
-	BITS32 ulOutputStatus;
+	UINT32 ulDistance;
+	UINT8  ucIntensity;
+	UINT32 ulOutputStatus;
 }POINT1;
 
 typedef struct
 {
-	BITS32  ulDistance;
-	BITS16  usIntensity;
+	UINT32  ulDistance;
+	UINT16  usIntensity;
 }POINT2;
 
 typedef struct
 {
-	BITS32     ulMsgId;
-	BITS8      ucDevNum;
-	BITS8      ucSoftwareVersion;
-	BITS8      ucLineNum;
-	BITS8      ucEcho;
-	BITS32     ulSerialNum1;
-	BITS32     ulSerialNum2;
-	BITS8      ucIntensityStatus;
-	BITS8      ucDevStatus;
-	BITS16     usScanCounter;
-	BITS32     ulTime;
-	BITS32     ulInputStatus;
-	BITS32     ulOutputStatus;
-	BITS32     ulStartAngle;
-	BITS16     usVerticalAngle;
-	BITS8       aucReserved[16];
-	BITS16     usPackMeasPointNum;
-	BITS32     ulAngularResolution;
-	BITS8      ucTotalPackNum;
-	BITS8      ucCurrentPackNO;
+	UINT32     ulMsgId;
+	UINT8      ucDevNum;
+	UINT8      ucSoftwareVersion;
+	UINT8      ucLineNum;
+	UINT8      ucEcho;
+	UINT32     ulSerialNum1;
+	UINT32     ulSerialNum2;
+	UINT8      ucIntensityStatus;
+	UINT8      ucDevStatus;
+	UINT16     usScanCounter;
+	UINT32     ulTime;
+	UINT32     ulInputStatus;
+	UINT32     ulOutputStatus;
+	UINT32     ulStartAngle;
+	UINT16     usVerticalAngle;
+	UINT8       aucReserved[16];
+	UINT16     usPackMeasPointNum;
+	UINT32     ulAngularResolution;
+	UINT8      ucTotalPackNum;
+	UINT8      ucCurrentPackNO;
 	POINT0     astPoint0[350];
 }MEAS_DATA_NO_INTENSITY;
 
 typedef struct
 {
-	BITS32     ulMsgId;
-	BITS8      ucDevNum;
-	BITS8      ucSoftwareVersion;
-	BITS8      ucLineNum;
-	BITS8      ucEcho;
-	BITS32     ulSerialNum1;
-	BITS32     ulSerialNum2;
-	BITS8      ucIntensityStatus;
-	BITS8      ucDevStatus;
-	BITS16     usScanCounter;
-	BITS32     ulTime;
-	BITS32     ulInputStatus;
-	BITS32     ulOutputStatus;
-	BITS32     ulStartAngle;
-	BITS16     usVerticalAngle;
-	BITS8      aucReserved[16];
-	BITS16     usPackMeasPointNum;
-	BITS32     ulAngularResolution;
-	BITS8      ucTotalPackNum;
-	BITS8      ucCurrentPackNO;
+	UINT32     ulMsgId;
+	UINT8      ucDevNum;
+	UINT8      ucSoftwareVersion;
+	UINT8      ucLineNum;
+	UINT8      ucEcho;
+	UINT32     ulSerialNum1;
+	UINT32     ulSerialNum2;
+	UINT8      ucIntensityStatus;
+	UINT8      ucDevStatus;
+	UINT16     usScanCounter;
+	UINT32     ulTime;
+	UINT32     ulInputStatus;
+	UINT32     ulOutputStatus;
+	UINT32     ulStartAngle;
+	UINT16     usVerticalAngle;
+	UINT8      aucReserved[16];
+	UINT16     usPackMeasPointNum;
+	UINT32     ulAngularResolution;
+	UINT8      ucTotalPackNum;
+	UINT8      ucCurrentPackNO;
 	POINT1     astPoint1[250];
 }MEAS_DATA_HAVE_INTENSITY1;
 
 
 typedef struct
 {
-	BITS32     ulMsgId;
-	BITS8      ucDevNum;
-	BITS8      ucSoftwareVersion;
-	BITS8      ucLineNum;
-	BITS8      ucEcho;
-	BITS32     ulSerialNum1;
-	BITS32     ulSerialNum2;
-	BITS8      ucIntensityStatus;
-	BITS8      ucDevStatus;
-	BITS16     usScanCounter;
-	BITS32     ulTime;
-	BITS32     ulInputStatus;
-	BITS32     ulOutputStatus;
-	BITS32     ulStartAngle;
-	BITS16     usVerticalAngle;
-	BITS8      aucReserved[16];
-	BITS16     usPackMeasPointNum;
-	BITS32     ulAngularResolution;
-	BITS8      ucTotalPackNum;
-	BITS8      ucCurrentPackNO;
+	UINT32     ulMsgId;
+	UINT8      ucDevNum;
+	UINT8      ucSoftwareVersion;
+	UINT8      ucLineNum;
+	UINT8      ucEcho;
+	UINT32     ulSerialNum1;
+	UINT32     ulSerialNum2;
+	UINT8      ucIntensityStatus;
+	UINT8      ucDevStatus;
+	UINT16     usScanCounter;
+	UINT32     ulTime;
+	UINT32     ulInputStatus;
+	UINT32     ulOutputStatus;
+	UINT32     ulStartAngle;
+	UINT16     usVerticalAngle;
+	UINT8      aucReserved[16];
+	UINT16     usPackMeasPointNum;
+	UINT32     ulAngularResolution;
+	UINT8      ucTotalPackNum;
+	UINT8      ucCurrentPackNO;
 	POINT2     astPoint2[250];
 }MEAS_DATA_HAVE_INTENSITY2;
 

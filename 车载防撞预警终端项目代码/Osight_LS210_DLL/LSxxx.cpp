@@ -1,12 +1,4 @@
-/*
-* LSxxx.cpp
-*
-*  Created on: 05-09-2017
-*  Author: Zihong Ma
-***************************************************************************
-*  OSIGHT *
-* www.osighttech.com  *
-***************************************************************************/
+
 
 #include <time.h>
 #include <sys/types.h>
@@ -33,8 +25,8 @@ int server_socket_fd;
 socklen_t client_addr_length;
 socklen_t server_addr_length;
 
-BITS8      g_aucRxBuf[RX_BUFSIZE];
-BITS8      g_aucTxBuf[TX_BUFSIZE];
+UINT8      g_aucRxBuf[RX_BUFSIZE];
+UINT8      g_aucTxBuf[TX_BUFSIZE];
 
 POINT0    DataIntensity0[2000];
 POINT1    DataIntensity1[2000];
@@ -119,7 +111,7 @@ bool LSxxx::isConnected()
 	return connected_;
 }
 
-void LSxxx::send_data(void* vpSrc, BITS16 usCnt)
+void LSxxx::send_data(void* vpSrc, UINT16 usCnt)
 {
 	/* tcp */
 	//write(socket_fd_, vpSrc, usCnt);
@@ -131,7 +123,7 @@ void LSxxx::send_data(void* vpSrc, BITS16 usCnt)
 /**********************************************************
 * 函数功能: 读取数据
 ***********************************************************/
-INT32 LSxxx::read_data(void* vpSrc, BITS16 usCnt)
+INT32 LSxxx::read_data(void* vpSrc, UINT16 usCnt)
 {
 	/* tcp */
 	//return read(socket_fd_, vpSrc, usCnt);
@@ -142,14 +134,33 @@ INT32 LSxxx::read_data(void* vpSrc, BITS16 usCnt)
 	//return recvfrom(server_socket_fd, (char*)vpSrc, usCnt, 0, (struct sockaddr*)&client_addr, &client_addr_length);
 }
 
-INT32 LSxxx::ParaSync(PARA_SYNC_RSP g_stRealPara)
+INT32 LSxxx::ParaSync(PARA_SYNC_RSP *g_stRealPara)
 {
-	BITS8  ucCount = 30;
+	UINT8  ucCount = 30;
 	INT32  ulSendLength = 0;
-	BITS32 ulMsgId = NULL_MSGID;
+	UINT32 ulMsgId = NULL_MSGID;
 	PARA_SYNC_REQ  stParaSynReq;
 	PARA_SYNC_RSP  stParaSynRsp;
-
+	/*PARA_SYNC_RSP  g_stRealPara;
+	g_stRealPara.ulMsgId = ulMsgId1;
+	g_stRealPara.usTransId = usTransId;
+	memcpy(g_stRealPara.aucMAC, aucMAC, sizeof(aucMAC));
+	g_stRealPara.ulSerialNum1 = ulSerialNum1;
+	g_stRealPara.ulSerialNum2 = ulSerialNum2;
+	g_stRealPara.ucDevNum = ucDevNum;
+	g_stRealPara.ucSoftwareVersion = ucSoftwareVersion;
+	g_stRealPara.ucIndex = ucIndex;
+	g_stRealPara.ucLineNum = ucLineNum;
+	g_stRealPara.ulStartAngle = ulStartAngle;
+	g_stRealPara.usVerticalAngle = usVerticalAngle;
+	g_stRealPara.usMaxDistance = usMaxDistance;
+	g_stRealPara.ulPointNum = ulPointNum;
+	memcpy(g_stRealPara.aucReserved, aucReserved, sizeof(aucReserved));
+	g_stRealPara.ucCurrentSpeed = ucCurrentSpeed;
+	g_stRealPara.ucIntensityStatus = ucIntensityStatus;
+	g_stRealPara.ucCurrentAreaId = ucCurrentAreaId;
+	g_stRealPara.ulAngularResolution = ulAngularResolution;*/
+	
 	stParaSynReq.ulMsgId = PARA_SYNC_REQ_ID;
 	stParaSynReq.usTransId = 0x0505;
 	printf("Parameter synchronization start\r\n");
@@ -161,8 +172,8 @@ INT32 LSxxx::ParaSync(PARA_SYNC_RSP g_stRealPara)
 		send_data(g_aucTxBuf, ulSendLength);
 	}
 
-	memset((BITS8*)&stParaSynRsp, 0, sizeof(PARA_SYNC_RSP));
-	memset((BITS8*)&g_stRealPara, 0, sizeof(PARA_SYNC_RSP));
+	memset((UINT8*)&stParaSynRsp, 0, sizeof(PARA_SYNC_RSP));
+	memset((UINT8*)&g_stRealPara, 0, sizeof(PARA_SYNC_RSP));
 
 	ulSendLength = 0;
 	while (ucCount--)
@@ -171,13 +182,13 @@ INT32 LSxxx::ParaSync(PARA_SYNC_RSP g_stRealPara)
 		if (ulSendLength > VALUE_0)
 		{
 			ulMsgId = NULL_MSGID;
-			ulMsgId = (((BITS32)g_aucRxBuf[BIT_0] << OFFSET_24) | ((BITS32)g_aucRxBuf[BIT_1] << OFFSET_16) |
-				((BITS32)g_aucRxBuf[BIT_2] << OFFSET_08) | ((BITS32)g_aucRxBuf[BIT_3]));
+			ulMsgId = (((UINT32)g_aucRxBuf[BIT_0] << OFFSET_24) | ((UINT32)g_aucRxBuf[BIT_1] << OFFSET_16) |
+				((UINT32)g_aucRxBuf[BIT_2] << OFFSET_08) | ((UINT32)g_aucRxBuf[BIT_3]));
 
 			if (PARA_SYNC_RSP_ID == ulMsgId)
 			{
-				UnpackParaSyncRsp((BITS8 *)&g_aucRxBuf, (PARA_SYNC_RSP *)&stParaSynRsp);
-				memcpy((BITS8*)&g_stRealPara, (BITS8*)&stParaSynRsp, sizeof(PARA_SYNC_RSP));
+				UnpackParaSyncRsp((UINT8 *)&g_aucRxBuf, (PARA_SYNC_RSP *)&stParaSynRsp);
+				memcpy((UINT8*)&g_stRealPara, (UINT8*)&stParaSynRsp, sizeof(PARA_SYNC_RSP));
 
 				return BUSPRO_OK;
 				printf("Parameter synchronization start1\r\n");
@@ -192,54 +203,54 @@ INT32 LSxxx::ParaSync(PARA_SYNC_RSP g_stRealPara)
 	return BUSPRO_ERROR;
 
 }
-INT32 LSxxx::ParaConfiguration(LSxxx laser, PARA_SYNC_RSP g_stRealPara)
+INT32 LSxxx::ParaConfiguration(PARA_SYNC_RSP *g_stRealPara)
 {
-	BITS8  ucIndex = 0;
-	BITS8  ucIndex1 = 0;
-	BITS8  ucCount = 30;
+	UINT8  ucIndex = 0;
+	UINT8  ucIndex1 = 0;
+	UINT8  ucCount = 30;
 	INT32  ulSendLength = 0;
-	BITS32 ulMsgId = NULL_MSGID;
+	UINT32 ulMsgId = NULL_MSGID;
 	PARA_CONFIGURATION_REQ stParaConfiguartionReq;
 	PARA_CONFIGURATION_RSP  stParaConfiguartionRsq;
 
 	stParaConfiguartionReq.ulMsgId = PARA_CONFIGURATION_REQ_ID;
 	stParaConfiguartionReq.usTransId = 0x0505;
-	memset((BITS8*)&stParaConfiguartionReq.aucReserved, 0, sizeof(stParaConfiguartionReq.aucReserved));
-	stParaConfiguartionReq.ucCurrentSpeed = g_stRealPara.ucCurrentSpeed;
-	stParaConfiguartionReq.ucIntensityStatus = g_stRealPara.ucIntensityStatus;
-	stParaConfiguartionReq.ucCurrentAreaId = g_stRealPara.ucCurrentAreaId;
-	stParaConfiguartionReq.ulAngularResolution = g_stRealPara.ulAngularResolution;
+	memset((UINT8*)&stParaConfiguartionReq.aucReserved, 0, sizeof(stParaConfiguartionReq.aucReserved));
+	stParaConfiguartionReq.ucCurrentSpeed = g_stRealPara->ucCurrentSpeed;
+	stParaConfiguartionReq.ucIntensityStatus = g_stRealPara->ucIntensityStatus;
+	stParaConfiguartionReq.ucCurrentAreaId = g_stRealPara->ucCurrentAreaId;
+	stParaConfiguartionReq.ulAngularResolution = g_stRealPara->ulAngularResolution;
 
 	for (ucIndex = 0; ucIndex<16; ucIndex++)
 	{
-		stParaConfiguartionReq.stAlarmArea[ucIndex].ucAreaType = g_stRealPara.stAlarmArea[ucIndex].ucAreaType;
+		stParaConfiguartionReq.stAlarmArea[ucIndex].ucAreaType = g_stRealPara->stAlarmArea[ucIndex].ucAreaType;
 		for (ucIndex1 = 0; ucIndex1<19; ucIndex1++)
 		{
-			stParaConfiguartionReq.stAlarmArea[ucIndex].aucPara[ucIndex1] = g_stRealPara.stAlarmArea[ucIndex].aucPara[ucIndex1];
+			stParaConfiguartionReq.stAlarmArea[ucIndex].aucPara[ucIndex1] = g_stRealPara->stAlarmArea[ucIndex].aucPara[ucIndex1];
 		}
 	}
 
 	memset(g_aucTxBuf, 0, sizeof(g_aucTxBuf));
-	ulSendLength = laser.PackParaConfigurationReq(&stParaConfiguartionReq, g_aucTxBuf);
+	ulSendLength = PackParaConfigurationReq(&stParaConfiguartionReq, g_aucTxBuf);
 
 	if (ulSendLength > VALUE_0)
 	{
-		laser.send_data(g_aucTxBuf, ulSendLength);
+		send_data(g_aucTxBuf, ulSendLength);
 	}
 
 	ulSendLength = 0;
 
 	while (ucCount--)
 	{
-		ulSendLength = laser.read_data(g_aucRxBuf, sizeof(stParaConfiguartionRsq));
+		ulSendLength = read_data(g_aucRxBuf, sizeof(stParaConfiguartionRsq));
 		if (ulSendLength > VALUE_0)
 		{
-			ulMsgId = (((BITS32)g_aucRxBuf[BIT_0] << OFFSET_24) | ((BITS32)g_aucRxBuf[BIT_1] << OFFSET_16) |
-				((BITS32)g_aucRxBuf[BIT_2] << OFFSET_08) | ((BITS32)g_aucRxBuf[BIT_3]));
+			ulMsgId = (((UINT32)g_aucRxBuf[BIT_0] << OFFSET_24) | ((UINT32)g_aucRxBuf[BIT_1] << OFFSET_16) |
+				((UINT32)g_aucRxBuf[BIT_2] << OFFSET_08) | ((UINT32)g_aucRxBuf[BIT_3]));
 
 			if (PARA_CONFIGURATION_RSP_ID == ulMsgId)
 			{
-				laser.UnpackParaConfigurationRsp((BITS8 *)&g_aucRxBuf, (PARA_CONFIGURATION_RSP *)&stParaConfiguartionRsq);
+				UnpackParaConfigurationRsp((UINT8 *)&g_aucRxBuf, (PARA_CONFIGURATION_RSP *)&stParaConfiguartionRsq);
 				if (0 == stParaConfiguartionRsq.ucResult)
 				{
 					return BUSPRO_OK;
@@ -263,7 +274,7 @@ INT32 LSxxx::ParaConfiguration(LSxxx laser, PARA_SYNC_RSP g_stRealPara)
 	return BUSPRO_ERROR;
 }
 
-void LSxxx::StartMeasureTransmission(LSxxx laser)
+void LSxxx::StartMeasureTransmission()
 {
 	INT32  ulSendLength = 0;
 	START_MEASURE_TRANSMISSION_REQ  stStartMeasureTransmissionReq;
@@ -272,76 +283,76 @@ void LSxxx::StartMeasureTransmission(LSxxx laser)
 	stStartMeasureTransmissionReq.ucStart = 0x01;
 
 	memset(g_aucTxBuf, 0, sizeof(g_aucTxBuf));
-	ulSendLength = laser.PackStartMeasureTransmissionReq(&stStartMeasureTransmissionReq, g_aucTxBuf);
+	ulSendLength = PackStartMeasureTransmissionReq(&stStartMeasureTransmissionReq, g_aucTxBuf);
 
 	if (ulSendLength > VALUE_0)
 	{
-		laser.send_data(g_aucTxBuf, ulSendLength);
+		send_data(g_aucTxBuf, ulSendLength);
 	}
 
 }
 
 
-INT32 LSxxx::GetLidarMeasData(LSxxx laser, PARA_SYNC_RSP g_stRealPara, MEAS_DATA_NO_INTENSITY g_stMeasDataNoIntensity, MEAS_DATA_HAVE_INTENSITY1   g_stMeasDataHaveIntensity1, MEAS_DATA_HAVE_INTENSITY2   g_stMeasDataHaveIntensity2)
+INT32 LSxxx::GetLidarMeasData(PARA_SYNC_RSP *g_stRealPara, MEAS_DATA_NO_INTENSITY *g_stMeasDataNoIntensity, MEAS_DATA_HAVE_INTENSITY1   *g_stMeasDataHaveIntensity1, MEAS_DATA_HAVE_INTENSITY2   *g_stMeasDataHaveIntensity2)
 {
-	BITS32  ulIndex = 0;
+	UINT32  ulIndex = 0;
 	INT32  ulSendLength = 0;
-	BITS32 ulMsgId = NULL_MSGID;
+	UINT32 ulMsgId = NULL_MSGID;
 
 	while (1)
 	{
 		memset(g_aucRxBuf, 0, sizeof(g_aucRxBuf));
-		ulSendLength = laser.read_data(g_aucRxBuf, sizeof(g_aucRxBuf));
+		ulSendLength = read_data(g_aucRxBuf, sizeof(g_aucRxBuf));
 		if (ulSendLength > VALUE_0)
 		{
-			ulMsgId = (((BITS32)g_aucRxBuf[BIT_0] << OFFSET_24) | ((BITS32)g_aucRxBuf[BIT_1] << OFFSET_16) |
-				((BITS32)g_aucRxBuf[BIT_2] << OFFSET_08) | ((BITS32)g_aucRxBuf[BIT_3]));
+			ulMsgId = (((UINT32)g_aucRxBuf[BIT_0] << OFFSET_24) | ((UINT32)g_aucRxBuf[BIT_1] << OFFSET_16) |
+				((UINT32)g_aucRxBuf[BIT_2] << OFFSET_08) | ((UINT32)g_aucRxBuf[BIT_3]));
 
 			if (MEAS_DATA_PACKAGE_ID == ulMsgId)
 			{
 
-				if (0x00 == g_stRealPara.ucIntensityStatus)
+				if (0x00 == g_stRealPara->ucIntensityStatus)
 				{
-					laser.UnpackMeasDataNoIntensity((BITS8 *)&g_aucRxBuf, (MEAS_DATA_NO_INTENSITY *)&g_stMeasDataNoIntensity);
-					for (ulIndex = 0; ulIndex<g_stMeasDataNoIntensity.usPackMeasPointNum; ulIndex++)
+					UnpackMeasDataNoIntensity((UINT8 *)&g_aucRxBuf, (MEAS_DATA_NO_INTENSITY *)&g_stMeasDataNoIntensity);
+					for (ulIndex = 0; ulIndex<g_stMeasDataNoIntensity->usPackMeasPointNum; ulIndex++)
 					{
-						DataIntensity0[g_stMeasDataNoIntensity.ucCurrentPackNO*g_stMeasDataNoIntensity.usPackMeasPointNum + ulIndex].ulDistance = g_stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
+						DataIntensity0[g_stMeasDataNoIntensity->ucCurrentPackNO*g_stMeasDataNoIntensity->usPackMeasPointNum + ulIndex].ulDistance = g_stMeasDataNoIntensity->astPoint0[ulIndex].ulDistance;
 						//printf("Get point0 measurement");
-						printf("DataIntensity0.ulOutputStatus=%06x\r\n\r\n", g_stMeasDataNoIntensity.ulOutputStatus);
+						printf("DataIntensity0.ulOutputStatus=%06x\r\n\r\n", g_stMeasDataNoIntensity->ulOutputStatus);
 					}
-					if ((g_stMeasDataNoIntensity.ucCurrentPackNO + 1) == g_stMeasDataNoIntensity.ucTotalPackNum)
+					if ((g_stMeasDataNoIntensity->ucCurrentPackNO + 1) == g_stMeasDataNoIntensity->ucTotalPackNum)
 					{
 						return BUSPRO_OK;
 					}
 				}
-				else if (0x01 == g_stRealPara.ucIntensityStatus)
+				else if (0x01 == g_stRealPara->ucIntensityStatus)
 				{
-					laser.UnpackMeasDataHaveIntensity1((BITS8 *)&g_aucRxBuf, (MEAS_DATA_HAVE_INTENSITY1 *)&g_stMeasDataHaveIntensity1);
-					for (ulIndex = 0; ulIndex<g_stMeasDataHaveIntensity1.usPackMeasPointNum; ulIndex++)
+					UnpackMeasDataHaveIntensity1((UINT8 *)&g_aucRxBuf, (MEAS_DATA_HAVE_INTENSITY1 *)&g_stMeasDataHaveIntensity1);
+					for (ulIndex = 0; ulIndex<g_stMeasDataHaveIntensity1->usPackMeasPointNum; ulIndex++)
 					{
-						DataIntensity1[g_stMeasDataHaveIntensity1.ucCurrentPackNO*g_stMeasDataHaveIntensity1.usPackMeasPointNum + ulIndex].ulDistance = g_stMeasDataHaveIntensity1.astPoint1[ulIndex].ulDistance;
-						DataIntensity1[g_stMeasDataHaveIntensity1.ucCurrentPackNO*g_stMeasDataHaveIntensity1.usPackMeasPointNum + ulIndex].ucIntensity = g_stMeasDataHaveIntensity1.astPoint1[ulIndex].ucIntensity;
-						DataIntensity1[g_stMeasDataHaveIntensity1.ucCurrentPackNO*g_stMeasDataHaveIntensity1.usPackMeasPointNum + ulIndex].ulOutputStatus = g_stMeasDataHaveIntensity1.ulOutputStatus;
+						DataIntensity1[g_stMeasDataHaveIntensity1->ucCurrentPackNO*g_stMeasDataHaveIntensity1->usPackMeasPointNum + ulIndex].ulDistance = g_stMeasDataHaveIntensity1->astPoint1[ulIndex].ulDistance;
+						DataIntensity1[g_stMeasDataHaveIntensity1->ucCurrentPackNO*g_stMeasDataHaveIntensity1->usPackMeasPointNum + ulIndex].ucIntensity = g_stMeasDataHaveIntensity1->astPoint1[ulIndex].ucIntensity;
+						DataIntensity1[g_stMeasDataHaveIntensity1->ucCurrentPackNO*g_stMeasDataHaveIntensity1->usPackMeasPointNum + ulIndex].ulOutputStatus = g_stMeasDataHaveIntensity1->ulOutputStatus;
 						printf("Get point1 measurement");
-						printf("DataIntensity1.ulOutputStatus=%04x\r\n\r\n", g_stMeasDataHaveIntensity1.ulOutputStatus);
+						printf("DataIntensity1.ulOutputStatus=%04x\r\n\r\n", g_stMeasDataHaveIntensity1->ulOutputStatus);
 					}
 
-					if ((g_stMeasDataHaveIntensity1.ucCurrentPackNO + 1) == g_stMeasDataHaveIntensity1.ucTotalPackNum)
+					if ((g_stMeasDataHaveIntensity1->ucCurrentPackNO + 1) == g_stMeasDataHaveIntensity1->ucTotalPackNum)
 					{
 						return BUSPRO_OK;
 					}
 				}
-				else if (0x02 == g_stRealPara.ucIntensityStatus)
+				else if (0x02 == g_stRealPara->ucIntensityStatus)
 				{
-					laser.UnpackMeasDataHaveIntensity2((BITS8 *)&g_aucRxBuf, (MEAS_DATA_HAVE_INTENSITY2 *)&g_stMeasDataHaveIntensity2);
-					for (ulIndex = 0; ulIndex<g_stMeasDataHaveIntensity2.usPackMeasPointNum; ulIndex++)
+					UnpackMeasDataHaveIntensity2((UINT8 *)&g_aucRxBuf, (MEAS_DATA_HAVE_INTENSITY2 *)&g_stMeasDataHaveIntensity2);
+					for (ulIndex = 0; ulIndex<g_stMeasDataHaveIntensity2->usPackMeasPointNum; ulIndex++)
 					{
-						DataIntensity2[g_stMeasDataHaveIntensity2.ucCurrentPackNO*g_stMeasDataHaveIntensity2.usPackMeasPointNum + ulIndex].ulDistance = g_stMeasDataHaveIntensity2.astPoint2[ulIndex].ulDistance;
-						DataIntensity2[g_stMeasDataHaveIntensity2.ucCurrentPackNO*g_stMeasDataHaveIntensity2.usPackMeasPointNum + ulIndex].usIntensity = g_stMeasDataHaveIntensity2.astPoint2[ulIndex].usIntensity;
+						DataIntensity2[g_stMeasDataHaveIntensity2->ucCurrentPackNO*g_stMeasDataHaveIntensity2->usPackMeasPointNum + ulIndex].ulDistance = g_stMeasDataHaveIntensity2->astPoint2[ulIndex].ulDistance;
+						DataIntensity2[g_stMeasDataHaveIntensity2->ucCurrentPackNO*g_stMeasDataHaveIntensity2->usPackMeasPointNum + ulIndex].usIntensity = g_stMeasDataHaveIntensity2->astPoint2[ulIndex].usIntensity;
 						//		DataIntensity2[g_stMeasDataHaveIntensity2.ucCurrentPackNO*g_stMeasDataHaveIntensity2.usPackMeasPointNum + ulIndex].ulOutputStatus = g_stMeasDataHaveIntensity2.astPoint2[ulIndex].ulOutputStatus;
 					}
 
-					if ((g_stMeasDataHaveIntensity2.ucCurrentPackNO + 1) == g_stMeasDataHaveIntensity2.ucTotalPackNum)
+					if ((g_stMeasDataHaveIntensity2->ucCurrentPackNO + 1) == g_stMeasDataHaveIntensity2->ucTotalPackNum)
 					{
 						return BUSPRO_OK;
 					}
@@ -359,9 +370,9 @@ INT32 LSxxx::GetLidarMeasData(LSxxx laser, PARA_SYNC_RSP g_stRealPara, MEAS_DATA
 
 
 
-INT32 LSxxx::PackParaSyncReq(PARA_SYNC_REQ *vpstParaSyncReq, BITS8 *vpucBuff)
+INT32 LSxxx::PackParaSyncReq(PARA_SYNC_REQ *vpstParaSyncReq, UINT8 *vpucBuff)
 {
-	BITS8 *pucSendNum = vpucBuff;
+	UINT8 *pucSendNum = vpucBuff;
 
 	if ((NULL == vpstParaSyncReq) || (NULL == vpucBuff))
 	{
@@ -374,11 +385,11 @@ INT32 LSxxx::PackParaSyncReq(PARA_SYNC_REQ *vpstParaSyncReq, BITS8 *vpucBuff)
 	return (vpucBuff - pucSendNum);
 }
 
-INT32 LSxxx::PackParaConfigurationReq(PARA_CONFIGURATION_REQ *vpstParaConfigurationReq, BITS8 *vpucBuff)
+INT32 LSxxx::PackParaConfigurationReq(PARA_CONFIGURATION_REQ *vpstParaConfigurationReq, UINT8 *vpucBuff)
 {
-	BITS8 *pucSendNum = vpucBuff;
-	BITS8  ucIndex = 0;
-	BITS8  ucIndex1 = 0;
+	UINT8 *pucSendNum = vpucBuff;
+	UINT8  ucIndex = 0;
+	UINT8  ucIndex1 = 0;
 
 	if ((NULL == vpstParaConfigurationReq) || (NULL == vpucBuff))
 	{
@@ -408,9 +419,9 @@ INT32 LSxxx::PackParaConfigurationReq(PARA_CONFIGURATION_REQ *vpstParaConfigurat
 	return (vpucBuff - pucSendNum);
 }
 
-INT32 LSxxx::PackStartMeasureTransmissionReq(START_MEASURE_TRANSMISSION_REQ *vpstStartMeasureTransmissionReq, BITS8 *vpucBuff)
+INT32 LSxxx::PackStartMeasureTransmissionReq(START_MEASURE_TRANSMISSION_REQ *vpstStartMeasureTransmissionReq, UINT8 *vpucBuff)
 {
-	BITS8 *pucSendNum = vpucBuff;
+	UINT8 *pucSendNum = vpucBuff;
 
 	if ((NULL == vpstStartMeasureTransmissionReq) || (NULL == vpucBuff))
 	{
@@ -423,10 +434,10 @@ INT32 LSxxx::PackStartMeasureTransmissionReq(START_MEASURE_TRANSMISSION_REQ *vps
 	return (vpucBuff - pucSendNum);
 }
 
-INT32 LSxxx::UnpackParaSyncRsp(BITS8 *vpucMsg, PARA_SYNC_RSP *vpstParaSyncRsp)
+INT32 LSxxx::UnpackParaSyncRsp(UINT8 *vpucMsg, PARA_SYNC_RSP *vpstParaSyncRsp)
 {
-	BITS8  ucIndex = 0;
-	BITS8  ucIndex1 = 0;
+	UINT8  ucIndex = 0;
+	UINT8  ucIndex1 = 0;
 
 	if ((NULL == vpucMsg) || (NULL == vpstParaSyncRsp))
 	{
@@ -474,7 +485,7 @@ INT32 LSxxx::UnpackParaSyncRsp(BITS8 *vpucMsg, PARA_SYNC_RSP *vpstParaSyncRsp)
 	return BUSPRO_OK;
 }
 
-INT32 LSxxx::UnpackParaConfigurationRsp(BITS8 *vpucMsg, PARA_CONFIGURATION_RSP *vpstParaConfigurationRsp)
+INT32 LSxxx::UnpackParaConfigurationRsp(UINT8 *vpucMsg, PARA_CONFIGURATION_RSP *vpstParaConfigurationRsp)
 {
 	if ((NULL == vpucMsg) || (NULL == vpstParaConfigurationRsp))
 	{
@@ -488,9 +499,9 @@ INT32 LSxxx::UnpackParaConfigurationRsp(BITS8 *vpucMsg, PARA_CONFIGURATION_RSP *
 	return BUSPRO_OK;
 }
 
-INT32 LSxxx::UnpackMeasDataNoIntensity(BITS8 *vpucMsg, MEAS_DATA_NO_INTENSITY *vpstMeasDataNoIntensity)
+INT32 LSxxx::UnpackMeasDataNoIntensity(UINT8 *vpucMsg, MEAS_DATA_NO_INTENSITY *vpstMeasDataNoIntensity)
 {
-	BITS32  ulIndex = 0;
+	UINT32  ulIndex = 0;
 
 	if ((NULL == vpucMsg) || (NULL == vpstMeasDataNoIntensity))
 	{
@@ -531,9 +542,9 @@ INT32 LSxxx::UnpackMeasDataNoIntensity(BITS8 *vpucMsg, MEAS_DATA_NO_INTENSITY *v
 }
 
 
-INT32 LSxxx::UnpackMeasDataHaveIntensity1(BITS8 *vpucMsg, MEAS_DATA_HAVE_INTENSITY1 *vpstMeasDataHaveIntensity1)
+INT32 LSxxx::UnpackMeasDataHaveIntensity1(UINT8 *vpucMsg, MEAS_DATA_HAVE_INTENSITY1 *vpstMeasDataHaveIntensity1)
 {
-	BITS32  ulIndex = 0;
+	UINT32  ulIndex = 0;
 
 	if ((NULL == vpucMsg) || (NULL == vpstMeasDataHaveIntensity1))
 	{
@@ -575,9 +586,9 @@ INT32 LSxxx::UnpackMeasDataHaveIntensity1(BITS8 *vpucMsg, MEAS_DATA_HAVE_INTENSI
 }
 
 
-INT32 LSxxx::UnpackMeasDataHaveIntensity2(BITS8 *vpucMsg, MEAS_DATA_HAVE_INTENSITY2 *vpstMeasDataHaveIntensity2)
+INT32 LSxxx::UnpackMeasDataHaveIntensity2(UINT8 *vpucMsg, MEAS_DATA_HAVE_INTENSITY2 *vpstMeasDataHaveIntensity2)
 {
-	BITS32  ulIndex = 0;
+	UINT32  ulIndex = 0;
 
 	if ((NULL == vpucMsg) || (NULL == vpstMeasDataHaveIntensity2))
 	{

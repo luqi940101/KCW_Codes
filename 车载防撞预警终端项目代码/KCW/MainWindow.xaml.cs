@@ -583,99 +583,201 @@ namespace WpfApplication4
         //}
 
         #region ---LS210 Lidar---
-        void LS210(LSxxx laser, string hostPC, Int32 portPC, byte IntensityStatus, byte[] pAlarmPara)
+        //public struct PARA_SYNC_RSP
+        //{
+        //    public UInt32 ulMsgId;
+        //    public UInt16 usTransId;
+        //    public byte[] aucMAC;
+        //    public UInt32 ulSerialNum1;
+        //    public UInt32 ulSerialNum2;
+        //    public byte ucDevNum;
+        //    public byte ucSoftwareVersion;
+        //    public byte ucIndex;
+        //    public byte ucLineNum;
+        //    public UInt32 ulStartAngle;
+        //    public UInt16 usVerticalAngle;
+        //    public UInt16 usMaxDistance;
+        //    public UInt32 ulPointNum;
+        //    public byte[] aucReserved;
+        //    public byte ucCurrentSpeed;
+        //    public byte ucIntensityStatus;
+        //    public byte ucCurrentAreaId;
+        //    public UInt32 ulAngularResolution;
+        //   // ALARM_AREA_INFO[] stAlarmArea;
+        //}
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PARA_SYNC_RSP
         {
 
-            byte err;
-            byte i = 0;
-            
-            //std::string hostPC="192.168.1.100";
-            //BITS32  portPC=5500;
-
-
-
-            while (true)
-            {
-                unsafe
-                {
-                    IntPtr intPtrStr = (IntPtr)Marshal.StringToHGlobalAnsi(hostPC);
-                    sbyte* hostPC_sbyteStr = (sbyte*)intPtrStr;
-                    laser.connect(hostPC_sbyteStr, portPC);
-                }
-                
-                if (!laser.isConnected())
-                {
-                    continue;
-                }
-                MessageBox.Show("Network connection OK \r\n");
-
-
-                do
-                {
-                    err = laser.ParaSync();
-                } while (0 != err);
-                MessageBox.Show("Parameter synchronization OK\r\n");
-
-                //g_stRealPara.ucIntensityStatus = 0;
-                //g_stRealPara.ucIntensityStatus = 1;
-                //g_stRealPara.ucIntensityStatus = 2;
-
-                g_stRealPara.ucIntensityStatus = IntensityStatus;
-
-                //Alarm Area Para
-                if ((0x00 != pAlarmPara[0]) || (0x00 != pAlarmPara[1]) || (0x00 != pAlarmPara[2]) || (0x00 != pAlarmPara[3]) || (0x00 != pAlarmPara[4]))
-                {
-                    g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType = pAlarmPara[1];
-                    //printf("pAlarmPara[0]=%d\r\n",pAlarmPara[0]);
-                    //printf("g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType=%d\r\n",g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType);
-                    for (i = 0; i < 19; i++)
-                    {
-                        g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i] = pAlarmPara[i + 2];
-                        //printf("g_stRealPara.stAlarmArea[%d].aucPara[%d]=%d\r\n",pAlarmPara[0],i,g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i]);
-                    }
-                }
-
-                do
-                {
-                    err = laser.ParaConfiguration();
-                } while (0 != err);
-                MessageBox.Show("Parameter configuration OK\r\n");
-
-                laser.StartMeasureTransmission();
-
-
-                MessageBox.Show("Start getting the Measurements ...\r\n");
-                while (1)
-                {
-                    err = laser.GetLidarMeasData();
-                    if (0 == err)
-                    {
-                        /*test: Print receiving ridar data */
-                        for (int i = 0; i < 1080; i++)
-                        {
-                            //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
-                            //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
-                            //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
-                            //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
-                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-                            //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
-                            //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
-                        }
-
-                    }
-                    else
-                    {
-                        //break;
-                    }
-
-                }
-
-            }
-
-
+            public UInt32 ulMsgId;
+            public UInt16 usTransId;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+            public byte[] aucMAC;
+            public UInt32 ulSerialNum1;
+            public UInt32 ulSerialNum2;
+            public byte ucDevNum;
+            public byte ucSoftwareVersion;
+            public byte ucIndex;
+            public byte ucLineNum;
+            public UInt32 ulStartAngle;
+            public UInt16 usVerticalAngle;
+            public UInt16 usMaxDistance;
+            public UInt32 ulPointNum;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+            public byte[] aucReserved;
+            public byte ucCurrentSpeed;
+            public byte ucIntensityStatus;
+            public byte ucCurrentAreaId;
+            public UInt32 ulAngularResolution;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public ALARM_AREA_INFO[] stAlarmArea;
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct ALARM_AREA_INFO
+        {
+
+            byte ucAreaType;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 19)]
+            byte[] aucPara;
+        }
+
+        //void LS210(LSxxx laser, string hostPC, Int32 portPC, byte IntensityStatus, byte[] pAlarmPara, PARA_SYNC_RSP g_stRealPara)
+        //{
+
+        //    byte err;
+        //    byte i = 0;
+
+        //    //std::string hostPC="192.168.1.100";
+        //    //UInt32  portPC=5500;
+
+
+        //    // Create a different thread
+        //    while (true)
+        //    {
+        //        unsafe
+        //        {
+        //            IntPtr intPtrStr = (IntPtr)Marshal.StringToHGlobalAnsi(hostPC);
+        //            sbyte* hostPC_sbyteStr = (sbyte*)intPtrStr;
+        //            laser.connect(hostPC_sbyteStr, portPC);
+                    
+        //        }
+
+        //        if (!laser.isConnected())
+        //        {
+        //            continue;
+        //        }
+        //        MessageBox.Show("Network connection OK \r\n");
+
+
+        //        do
+        //        {
+        //            err = laser.ParaSync(g_stRealPara);
+        //        } while (0 != err);
+        //        MessageBox.Show("Parameter synchronization OK\r\n");
+
+        //        //g_stRealPara.ucIntensityStatus = 0;
+        //        //g_stRealPara.ucIntensityStatus = 1;
+        //        //g_stRealPara.ucIntensityStatus = 2;
+
+        //        g_stRealPara.ucIntensityStatus = IntensityStatus;
+
+        //        //Alarm Area Para
+        //        if ((0x00 != pAlarmPara[0]) || (0x00 != pAlarmPara[1]) || (0x00 != pAlarmPara[2]) || (0x00 != pAlarmPara[3]) || (0x00 != pAlarmPara[4]))
+        //        {
+        //            g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType = pAlarmPara[1];
+        //            //printf("pAlarmPara[0]=%d\r\n",pAlarmPara[0]);
+        //            //printf("g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType=%d\r\n",g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType);
+        //            for (i = 0; i < 19; i++)
+        //            {
+        //                g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i] = pAlarmPara[i + 2];
+        //                //printf("g_stRealPara.stAlarmArea[%d].aucPara[%d]=%d\r\n",pAlarmPara[0],i,g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i]);
+        //            }
+        //        }
+
+        //        do
+        //        {
+        //            err = laser.ParaConfiguration();
+        //        } while (0 != err);
+        //        MessageBox.Show("Parameter configuration OK\r\n");
+
+        //        laser.StartMeasureTransmission();
+
+
+        //        MessageBox.Show("Start getting the Measurements ...\r\n");
+        //        while (1)
+        //        {
+        //            err = laser.GetLidarMeasData();
+        //            if (0 == err)
+        //            {
+        //                /*test: Print receiving ridar data */
+        //                for (int i = 0; i < 1080; i++)
+        //                {
+        //                    //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
+        //                    //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
+        //                    //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
+        //                    //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
+        //                    //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+        //                    //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+        //                    //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+        //                    //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+        //                }
+
+        //            }
+        //            else
+        //            {
+        //                //break;
+        //            }
+
+        //        }
+
+        //    }
+
+
+        //}
         #endregion
+        [System.Runtime.InteropServices.StructLayout(LayoutKind.Sequential)]
+        public struct IGR{
+            public int igr_a;
+            public int igr_b;
+        };
+        [System.Runtime.InteropServices.StructLayout(LayoutKind.Sequential)]
+        public struct IGR_GEN_T {
+            public int aa_disable; /*/< authentiation adjust checking disable */
+            public int badtag_rej; /*/< reject packet if it is bypassed due to badtag */
+            public int pad_en; /*/< pad non-rejected packets up to 64B */
+            public int byp_ctl_sl; /*/< bypass packet if SL field does not correspond to packet len */
+            public int byp_ctl_v; /*/< bypass packet if V bit is set */
+            public int byp_ctl_sc; /*/< bypass packet if SC bit and either ES or SCB bits are set */
+            public int byp_ctl_ec; /*/< bypass packet if DC bits are not 00 or 11 */
+            public int sectag_flag; /*/< select which flag bit indicates that a SEC tag was present in pkt */
+            public IGR sis;
+        }
+        
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "struct_test", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int struct_test(int port, ref IGR_GEN_T igr_gen);
+        IGR_GEN_T igr_gen = new IGR_GEN_T();
+        //IGR igr = new IGR();
+    
+        private void BtnTestStruct_Click(object sender, RoutedEventArgs e)
+        {
+            int port = 1;
+            igr_gen.aa_disable = 1;
+            igr_gen.byp_ctl_v = 2;
+            igr_gen.sis.igr_a = 3;
+            
+            //IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(igr_gen));
+
+            //Marshal.StructureToPtr(igr_gen, ptr, false);
+
+            int ret =struct_test(port, ref igr_gen);
+
+            //igr_gen = (IGR_GEN_T)Marshal.PtrToStructure(ptr, typeof(IGR_GEN_T));
+
+            //Marshal.FreeHGlobal(ptr);
+
+            MessageBox.Show(Convert.ToString(ret));
+        }
     }
 
 }
