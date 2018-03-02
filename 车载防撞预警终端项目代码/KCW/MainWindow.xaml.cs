@@ -36,7 +36,7 @@ namespace WpfApplication4
         public MainWindow()
         {
             InitializeComponent();
-                     
+
             SystemPub.ADRcp = new PassiveRcp();
             SystemPub.ADRcp.RcpLogEventReceived += RcpLogEventReceived;
             SystemPub.ADRcp.RxRspParsed += RxRspEventReceived;
@@ -49,18 +49,18 @@ namespace WpfApplication4
             BtnStartRead.IsEnabled = false;
             //Vehicle1.Stroke = Brushes.Red;
             //Vehicle1.Fill = Brushes.Red;
-            
-           
-            
+
+
+
             // dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             // dispatcherTimer.Interval = new TimeSpan(0,5,0);
             //  dispatcherTimer.Start();
 
         }
 
-  
+
         #region ---RFID Reader---
-        
+
         #region ---ThreadReadInfo----
         private bool m_bStopComm = true;
         private bool m_bAlive = false;
@@ -77,7 +77,7 @@ namespace WpfApplication4
                 monThread.Start();
             }
         }
-       
+
         private void ThreadReadInfo()
         {
             while (!m_bAlive && SystemPub.ADSio.bConnected)
@@ -101,36 +101,36 @@ namespace WpfApplication4
                 mReadInfoCount = 0;
                 System.Threading.Thread.Sleep(100);
 
-               // this.tsStatusInfo.Text = "  Ready..";
+                // this.tsStatusInfo.Text = "  Ready..";
             }
 
             System.Console.WriteLine(" End ThreadReadInfo()");
         }
-/*
-        int mPortIndex = 0;
-        string[] mPortNameArray;
-        private void GetPortName()
-        {
-            mPortNameArray = SerialPort.GetPortNames();
-            for (int i = 0; i < mPortNameArray.Length; i++)
-            {
-                if (IniSettings.PortName == mPortNameArray[i])
+        /*
+                int mPortIndex = 0;
+                string[] mPortNameArray;
+                private void GetPortName()
                 {
-                    mPortIndex = i;
-                    return;
+                    mPortNameArray = SerialPort.GetPortNames();
+                    for (int i = 0; i < mPortNameArray.Length; i++)
+                    {
+                        if (IniSettings.PortName == mPortNameArray[i])
+                        {
+                            mPortIndex = i;
+                            return;
+                        }
+                    }
+                    mPortIndex = 0;
                 }
-            }
-            mPortIndex = 0;
-        }
 
-        private string GetNextPortName()
-        {
-            if (mPortNameArray.Length <= 0) return "";
-            mPortIndex++;
-            if (mPortIndex >= mPortNameArray.Length) mPortIndex = 0;
-            return mPortNameArray[mPortIndex];
-        }
-*/
+                private string GetNextPortName()
+                {
+                    if (mPortNameArray.Length <= 0) return "";
+                    mPortIndex++;
+                    if (mPortIndex >= mPortNameArray.Length) mPortIndex = 0;
+                    return mPortNameArray[mPortIndex];
+                }
+        */
         private void SwitchPortAndBaud()
         {
             if (IniSettings.Communication == IniSettings.CommType.SERIAL)
@@ -227,13 +227,13 @@ namespace WpfApplication4
                 return;
             }
 
-           Dispatcher.Invoke(new Action(delegate ()
-            {
-                __ParseRsp(e.Protocol);
-            }));
+            Dispatcher.Invoke(new Action(delegate ()
+             {
+                 __ParseRsp(e.Protocol);
+             }));
         }
 
-       // ucPassive ucPassive1 = new ucPassive();
+        // ucPassive ucPassive1 = new ucPassive();
         private void __ParseRsp(ProtocolStruct Data)
         {
             switch (Data.Code)
@@ -241,7 +241,7 @@ namespace WpfApplication4
                 case PassiveRcp.RCP_CMD_INFO:
                     if (Data.Length > 0 && Data.Type == 0)
                     {
-                       m_bAlive = true;
+                        m_bAlive = true;
                         #region ---Parameter---
                         string strInfo = Encoding.ASCII.GetString(Data.Payload, 0, Data.Length);
 
@@ -260,24 +260,24 @@ namespace WpfApplication4
                             BtnConnect.Foreground = Brushes.Black;
                             BtnStartRead.Content = "Start Read";
                         }
-                            
+
                         //SystemPub.ADRcp.Address = Convert.ToInt32(strInfo.Substring(29, 5));
 
                         if (SystemPub.ADRcp.Type != "W" && SystemPub.ADRcp.Type != "T")
                             SystemPub.ADRcp.Type = "C";
                         ReaderMode = SystemPub.ADRcp.Mode + SystemPub.ADRcp.Type;
 
-                       // tsFWVersion.Text = IniSettings.AppsLanguage == IniSettings.LngType.ENG ?
-                       //     "Type:" + ReaderMode + " - Version:" + SystemPub.ADRcp.Version + " - Address: " + SystemPub.ADRcp.Address :
-                       //     "类型:" + ReaderMode + " - 版本:" + SystemPub.ADRcp.Version + " - 地址: " + SystemPub.ADRcp.Address;
+                        // tsFWVersion.Text = IniSettings.AppsLanguage == IniSettings.LngType.ENG ?
+                        //     "Type:" + ReaderMode + " - Version:" + SystemPub.ADRcp.Version + " - Address: " + SystemPub.ADRcp.Address :
+                        //     "类型:" + ReaderMode + " - 版本:" + SystemPub.ADRcp.Version + " - 地址: " + SystemPub.ADRcp.Address;
                         #endregion
 
                         switch (ReaderMode.Substring(0, 1))
                         {
                             case "P":
-                             //   ucPassive1.Show();
-                              //  ucPassive1.Parent = pnlInformation;
-                              //  ucPassive1.Dock = DockStyle.Fill;
+                                //   ucPassive1.Show();
+                                //  ucPassive1.Parent = pnlInformation;
+                                //  ucPassive1.Dock = DockStyle.Fill;
                                 SystemPub.ADRcp.Sio = SystemPub.ADSio;
                                 break;
                         }
@@ -289,7 +289,7 @@ namespace WpfApplication4
             {
                 case "P":
                     ParseRsp(Data);
-                   // pDisplayStatusInfo(Data.Code, Data.Type, Data.Length);
+                    // pDisplayStatusInfo(Data.Code, Data.Type, Data.Length);
                     break;
             }
         }
@@ -332,12 +332,12 @@ namespace WpfApplication4
                     }
                     break;
                 case PassiveRcp.RCP_CMD_EPC_IDEN:
-                            if (Data.Length > 0 && Data.Type == 0)
-                            {
+                    if (Data.Length > 0 && Data.Type == 0)
+                    {
                         //utxtCard.InputMask = GetUserTextBoxMask(Convert.ToInt32(Data.Length - 1));
-                                CardID.Text = ConvertData.ByteArrayToHexString(Data.Payload, 1, Data.Length - 1);
+                        CardID.Text = ConvertData.ByteArrayToHexString(Data.Payload, 1, Data.Length - 1);
 
-                            }
+                    }
                     break;
                     /*
                     case PassiveRcp.RCP_CMD_EPC_MULT:
@@ -402,7 +402,7 @@ namespace WpfApplication4
 
         void Instance_Connected(object sender, ConnectEventArg e)
         {
-            
+
             try
             {
                 this.Dispatcher.Invoke(new Action(delegate ()
@@ -473,15 +473,19 @@ namespace WpfApplication4
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             BtnClose.IsEnabled = false;
-           /*
-            if (SystemPub.ADSio.bConnected)
-            {
-                SystemPub.ADSio.DisConnect();
-            }
-            */
+            /*
+             if (SystemPub.ADSio.bConnected)
+             {
+                 SystemPub.ADSio.DisConnect();
+             }
+             */
+            //if (IsLidarRuning) {
+            //    BtnLidarConnect_Click(sender, e);
+            //}
+            System.Environment.Exit(0);
             System.Windows.Application.Current.Shutdown();
         }
-        
+
         //private void BtnReadCard_Click(object sender, RoutedEventArgs e)
         //{
         //    BtnReadCard.IsEnabled = false;
@@ -497,9 +501,9 @@ namespace WpfApplication4
 
         }
 
-       private void BtnConnect_Click(object sender, RoutedEventArgs e)
+        private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-           // BtnConnect.IsEnabled = false;
+            // BtnConnect.IsEnabled = false;
             DoEvents();
             if (SystemPub.ADSio.bConnected)
             {
@@ -538,6 +542,8 @@ namespace WpfApplication4
                 //DoEvents();
             }
             */
+
+
         }
 
         private void Status_TextChanged(object sender, TextChangedEventArgs e)
@@ -557,11 +563,8 @@ namespace WpfApplication4
             {
                 BtnStartRead.Content = "Stop Read";
             }
+    }
 
-            
-            
-        }
-                
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             if (IsStart & !m_bStopComm)
@@ -583,158 +586,164 @@ namespace WpfApplication4
         //}
 
         #region ---LS210 Lidar---
-        //public struct PARA_SYNC_RSP
-        //{
-        //    public UInt32 ulMsgId;
-        //    public UInt16 usTransId;
-        //    public byte[] aucMAC;
-        //    public UInt32 ulSerialNum1;
-        //    public UInt32 ulSerialNum2;
-        //    public byte ucDevNum;
-        //    public byte ucSoftwareVersion;
-        //    public byte ucIndex;
-        //    public byte ucLineNum;
-        //    public UInt32 ulStartAngle;
-        //    public UInt16 usVerticalAngle;
-        //    public UInt16 usMaxDistance;
-        //    public UInt32 ulPointNum;
-        //    public byte[] aucReserved;
-        //    public byte ucCurrentSpeed;
-        //    public byte ucIntensityStatus;
-        //    public byte ucCurrentAreaId;
-        //    public UInt32 ulAngularResolution;
-        //   // ALARM_AREA_INFO[] stAlarmArea;
-        //}
-        [StructLayout(LayoutKind.Sequential)]
-        public struct PARA_SYNC_RSP
-        {
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "LS_connect", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int LS_connect(string hostPC, int portPC);
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "isConnected", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern bool isConnected();
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "ParaSync", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int ParaSync(ref PARA_SYNC_RSP g_stRealPara);
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "ParaSync", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int ParaConfiguration(ref PARA_SYNC_RSP g_stRealPara);
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "ParaSync", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern void StartMeasureTransmission();
 
-            public UInt32 ulMsgId;
-            public UInt16 usTransId;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-            public byte[] aucMAC;
-            public UInt32 ulSerialNum1;
-            public UInt32 ulSerialNum2;
-            public byte ucDevNum;
-            public byte ucSoftwareVersion;
-            public byte ucIndex;
-            public byte ucLineNum;
-            public UInt32 ulStartAngle;
-            public UInt16 usVerticalAngle;
-            public UInt16 usMaxDistance;
-            public UInt32 ulPointNum;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-            public byte[] aucReserved;
-            public byte ucCurrentSpeed;
-            public byte ucIntensityStatus;
-            public byte ucCurrentAreaId;
-            public UInt32 ulAngularResolution;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public ALARM_AREA_INFO[] stAlarmArea;
+
+
+        //LSxxx laser = new LSxxx();
+        private void LS210()
+        {
+            PARA_SYNC_RSP g_stRealPara = new PARA_SYNC_RSP();
+            int err;
+            //byte i = 0;
+            string hostPC = "192.168.1.100";
+            
+            Int32 portPC = 5500;
+            byte IntensityStatus = 0;
+            
+            // Create a different thread
+            while (true)
+            {
+                LS_connect(hostPC, portPC);
+
+                if (!isConnected())
+                {
+                    continue;
+                }
+
+                this.Dispatcher.Invoke(new Action(delegate ()
+                {
+                    LidarConnectionStatus.Text = "Network connection OK";
+                    DoEvents();
+                }));
+                
+
+                do
+                {
+                    err = ParaSync(ref g_stRealPara);
+                } while (err != 0);
+                this.Dispatcher.Invoke(new Action(delegate ()
+                {
+                    LidarConnectionStatus.Text = "Parameter synchronization OK";
+                    DoEvents();
+                }));
+                
+                //g_stRealPara.ucIntensityStatus = 0;
+                //g_stRealPara.ucIntensityStatus = 1;
+                //g_stRealPara.ucIntensityStatus = 2;
+
+                g_stRealPara.ucIntensityStatus = IntensityStatus;
+
+                do
+                {
+                  err = ParaConfiguration(ref g_stRealPara);
+                } while (0 != err);
+                this.Dispatcher.Invoke(new Action(delegate ()
+                {
+                    LidarConnectionStatus.Text = "Parameter configuration OK";
+                    DoEvents();
+                }));
+                
+                StartMeasureTransmission();
+                this.Dispatcher.Invoke(new Action(delegate ()
+                {
+                    LidarConnectionStatus.Text = "Start getting the Measurements ...";
+                    DoEvents();
+                }));
+
+                ////Alarm Area Para
+                //if ((0x00 != pAlarmPara[0]) || (0x00 != pAlarmPara[1]) || (0x00 != pAlarmPara[2]) || (0x00 != pAlarmPara[3]) || (0x00 != pAlarmPara[4]))
+                //{
+                //    g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType = pAlarmPara[1];
+                //    //printf("pAlarmPara[0]=%d\r\n",pAlarmPara[0]);
+                //    //printf("g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType=%d\r\n",g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType);
+                //    for (i = 0; i < 19; i++)
+                //    {
+                //        g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i] = pAlarmPara[i + 2];
+                //        //printf("g_stRealPara.stAlarmArea[%d].aucPara[%d]=%d\r\n",pAlarmPara[0],i,g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i]);
+                //    }
+                //}
+
+                //do
+                //{
+                //    err = Convert.ToByte(LSxxx.ParaConfiguration(g_stRealPara));
+                //} while (0 != err);
+                //MessageBox.Show("Parameter configuration OK\r\n");
+
+                while (true)
+                {
+                    this.Dispatcher.Invoke(new Action(delegate ()
+                    {
+                        LidarConnectionStatus.Text = "Start getting the Measurements ...";
+                        DoEvents();
+                    }));
+
+                    LidarConnectionStatus.Text = "Start getting the Measurements ...";
+                    //err = LSxxx.GetLidarMeasData();
+                    //if (0 == err)
+                    //{
+                    //    /*test: Print receiving ridar data */
+                    //    for (int i = 0; i < 1080; i++)
+                    //    {
+                    //        //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
+                    //        //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
+                    //        //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
+                    //        //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
+                    //        //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+                    //        //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+                    //        //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+                    //        //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+                    //    }
+
+                    //}
+                    //else
+                    //{
+                    //    //break;
+                    //}
+
+                }
+
+            }
+
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct ALARM_AREA_INFO
-        {
 
-            byte ucAreaType;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 19)]
-            byte[] aucPara;
+        //private void test(){
+        //    while(true)
+        //    MessageBox.Show("Hello World");
+        //}
+
+        bool IsLidarRuning = false; 
+        private void BtnLidarConnect_Click(object sender, RoutedEventArgs e)
+        {
+            LidarConnectionStatus.Text = "";
+            System.Threading.Thread LidarThread = new System.Threading.Thread(new System.Threading.ThreadStart(LS210));
+            if (!IsLidarRuning) {
+                LidarThread.Start();
+                BtnLidarConnect.Content = "Disconnect Lidar";
+            }
+            else {
+                LidarThread.Abort();
+                BtnLidarConnect.Content = "Connect Lidar";
+            }
+            IsLidarRuning = !IsLidarRuning;
+            //LS210("192.168.1.100", 5500, 0);
         }
 
-        //void LS210(LSxxx laser, string hostPC, Int32 portPC, byte IntensityStatus, byte[] pAlarmPara, PARA_SYNC_RSP g_stRealPara)
-        //{
+        private void LidarConnectionStatus_TextChanged(object sender, TextChangedEventArgs e)
+        {
 
-        //    byte err;
-        //    byte i = 0;
+        }
 
-        //    //std::string hostPC="192.168.1.100";
-        //    //UInt32  portPC=5500;
-
-
-        //    // Create a different thread
-        //    while (true)
-        //    {
-        //        unsafe
-        //        {
-        //            IntPtr intPtrStr = (IntPtr)Marshal.StringToHGlobalAnsi(hostPC);
-        //            sbyte* hostPC_sbyteStr = (sbyte*)intPtrStr;
-        //            laser.connect(hostPC_sbyteStr, portPC);
-                    
-        //        }
-
-        //        if (!laser.isConnected())
-        //        {
-        //            continue;
-        //        }
-        //        MessageBox.Show("Network connection OK \r\n");
-
-
-        //        do
-        //        {
-        //            err = laser.ParaSync(g_stRealPara);
-        //        } while (0 != err);
-        //        MessageBox.Show("Parameter synchronization OK\r\n");
-
-        //        //g_stRealPara.ucIntensityStatus = 0;
-        //        //g_stRealPara.ucIntensityStatus = 1;
-        //        //g_stRealPara.ucIntensityStatus = 2;
-
-        //        g_stRealPara.ucIntensityStatus = IntensityStatus;
-
-        //        //Alarm Area Para
-        //        if ((0x00 != pAlarmPara[0]) || (0x00 != pAlarmPara[1]) || (0x00 != pAlarmPara[2]) || (0x00 != pAlarmPara[3]) || (0x00 != pAlarmPara[4]))
-        //        {
-        //            g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType = pAlarmPara[1];
-        //            //printf("pAlarmPara[0]=%d\r\n",pAlarmPara[0]);
-        //            //printf("g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType=%d\r\n",g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType);
-        //            for (i = 0; i < 19; i++)
-        //            {
-        //                g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i] = pAlarmPara[i + 2];
-        //                //printf("g_stRealPara.stAlarmArea[%d].aucPara[%d]=%d\r\n",pAlarmPara[0],i,g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i]);
-        //            }
-        //        }
-
-        //        do
-        //        {
-        //            err = laser.ParaConfiguration();
-        //        } while (0 != err);
-        //        MessageBox.Show("Parameter configuration OK\r\n");
-
-        //        laser.StartMeasureTransmission();
-
-
-        //        MessageBox.Show("Start getting the Measurements ...\r\n");
-        //        while (1)
-        //        {
-        //            err = laser.GetLidarMeasData();
-        //            if (0 == err)
-        //            {
-        //                /*test: Print receiving ridar data */
-        //                for (int i = 0; i < 1080; i++)
-        //                {
-        //                    //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
-        //                    //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
-        //                    //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
-        //                    //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
-        //                    //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-        //                    //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-        //                    //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
-        //                    //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
-        //                }
-
-        //            }
-        //            else
-        //            {
-        //                //break;
-        //            }
-
-        //        }
-
-        //    }
-
-
-        //}
         #endregion
         [System.Runtime.InteropServices.StructLayout(LayoutKind.Sequential)]
         public struct IGR{
@@ -758,26 +767,62 @@ namespace WpfApplication4
         private static extern int struct_test(int port, ref IGR_GEN_T igr_gen);
         IGR_GEN_T igr_gen = new IGR_GEN_T();
         //IGR igr = new IGR();
-    
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "char_test", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern void char_test(string readchar, StringBuilder returnchar, int len);
+
         private void BtnTestStruct_Click(object sender, RoutedEventArgs e)
         {
+            StringBuilder returnchar = new StringBuilder();
+            StringBuilder returnchar1 = new StringBuilder();
+            StringBuilder returnchar2 = new StringBuilder();
+            string readchar = "Hello World";
+            string readchar1 = "Hello";
+            string readchar2 = "World";
+            char_test(readchar, returnchar, 10);
+            MessageBox.Show(Convert.ToString(returnchar));
+
+            char_test(readchar1, returnchar1, 10);
+            MessageBox.Show(Convert.ToString(returnchar1));
+
+
+            // NOT WORKING WITH EXPORT CLASS !!!!!
+            char_test(readchar2, returnchar2, 10);
+            MessageBox.Show(Convert.ToString(returnchar2));
+            // string hostPC = "192.168.1.100";
+
+            // //Int32 portPC = 5500;
+            //// byte IntensityStatus = 0;
+
+            // // Create a different thread
+            // //while (true)
+            // //{
+            // LSxxx.connect(hostPC, 5500);
+
+            //char readchar = 'a';
+            //char readchar1 = 'b';
+            //char outchar = char_test(readchar);
+            //MessageBox.Show(Convert.ToString(outchar));
+            ////int a = 300;
+            ////string readchar1 = "Hello1";
+            //char outchar1 = char_test(readchar1);
+            //MessageBox.Show(Convert.ToString(outchar1));
+            //int a = 3000;
+            //string_test st = new string_test();
+            //string_test.read_char_int(readchar, a);
+
             int port = 1;
             igr_gen.aa_disable = 1;
             igr_gen.byp_ctl_v = 2;
             igr_gen.sis.igr_a = 3;
-            
-            //IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(igr_gen));
-
-            //Marshal.StructureToPtr(igr_gen, ptr, false);
-
-            int ret =struct_test(port, ref igr_gen);
-
-            //igr_gen = (IGR_GEN_T)Marshal.PtrToStructure(ptr, typeof(IGR_GEN_T));
-
-            //Marshal.FreeHGlobal(ptr);
-
+            int ret = struct_test(port, ref igr_gen);
             MessageBox.Show(Convert.ToString(ret));
+            //igr_gen.aa_disable = 3;
+            //igr_gen.byp_ctl_v = 4;
+            //igr_gen.sis.igr_a = 5;
+            //int ret2 = struct_test(port, ref igr_gen);  
+            //MessageBox.Show(Convert.ToString(ret2));
         }
+
     }
 
 }

@@ -141,12 +141,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Function.h" />
-    <ClInclude Include="LSxxx.h" />
+    <ClInclude Include="LS210.h" />
     <ClInclude Include="ls_structs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Function.cpp" />
-    <ClCompile Include="LSxxx.cpp" />
+    <ClCompile Include="LS210.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

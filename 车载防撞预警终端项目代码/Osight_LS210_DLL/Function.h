@@ -30,6 +30,16 @@ typedef struct {
 
 
 extern "C" __declspec(dllexport) int struct_test(int port, IGR_GEN_T *igr_gen);
+extern "C" __declspec(dllexport) void char_test(const char* readchar, char* returnchar, int len);
+
+extern "C" class __declspec(dllexport)  string_test
+{
+public:
+	
+	void _stdcall char_test(const char* readchar, char* returnchar, int len);
+	
+
+};
 
 //extern "C" class _declspec(dllexport) Mask
 //{

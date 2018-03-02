@@ -48,11 +48,13 @@ LSxxx::~LSxxx()
 {
 }
 
-INT32 LSxxx::connect(char* hostPC, int portPC)
+void LSxxx::connect(const char* hostPC, int portPC)
 {
 	/* UDP */
 	/* server  */
 	//	bzero(&server_addr, sizeof(server_addr));
+///	char* p = hostPC;
+	std::string host = hostPC;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	inet_pton(AF_INET, hostPC, &server_addr.sin_addr);
@@ -70,7 +72,7 @@ INT32 LSxxx::connect(char* hostPC, int portPC)
 	if (server_socket_fd < 0)
 	{
 		perror("Create Socket Failed:");
-		return 1;
+//		return 1;
 	}
 
 	/* setsockopt */
@@ -78,14 +80,14 @@ INT32 LSxxx::connect(char* hostPC, int portPC)
 	if (setsockopt(server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int))<0)
 	{
 		perror(" setsockopt error ");
-		return 1;
+//		return 1;
 	}
 
 	/* bind */
 	if (-1 == (bind(server_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr))))
 	{
 		perror("Server Bind Failed:");
-		return 1;
+//		return 1;
 	}
 
 	client_addr_length = sizeof(client_addr);
@@ -93,7 +95,7 @@ INT32 LSxxx::connect(char* hostPC, int portPC)
 
 	connected_ = true;
 
-	return 0;
+	//return 0;
 }
 
 

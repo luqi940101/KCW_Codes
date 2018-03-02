@@ -12,6 +12,15 @@
 #define LSXXX_LS_STRUCTS_H_
 
 #include <stdint.h>
+#include <stdio.h>
+#include <string>
+#include <stdint.h>
+#include <csignal>
+#include <cstdio>
+//#include "LSxxx.h"
+#include <time.h>
+#include <WinSock2.h>
+#include <stdlib.h>
 
 #define BUSPRO_OK              0   
 #define BUSPRO_ERROR           -1 

@@ -9,6 +9,11 @@ using System.Runtime.InteropServices;
 
 namespace WpfApplication4
 {
+    public class string_test
+    {
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "?char_test@string_test@@QAGXPBDPADH@Z", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        public static extern void char_test(string readchar, StringBuilder returnchar, int len);
+    }
 
     [System.Runtime.InteropServices.StructLayout(LayoutKind.Sequential)]
     public struct ALARM_AREA_INFO
@@ -208,17 +213,17 @@ namespace WpfApplication4
         POINT2[] astPoint2;
     }
 
-    class LSxxx
+    public class LSxxx
     {
 
-        LSxxx() {
+        public LSxxx() {
             connected_ = false;
         }
         ~LSxxx() {
         }
 
-        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "?connect@LSxxx@@QAEHPADH@Z", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern Int32 connect(string hostPC, int portPC);
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "?connect@LSxxx@@QAGXPBDH@Z", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        public static extern void connect(string hostPC, int portPC);
 
         [DllImport("Osight_LS210_DLL.dll", EntryPoint = "?disconnect@LSxxx@@QAEXXZ", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void disconnect();
@@ -268,6 +273,9 @@ namespace WpfApplication4
         [DllImport("Osight_LS210_DLL.dll", EntryPoint = "?UnpackMeasDataHaveIntensity2@LSxxx@@QAEHPAEPAUMEAS_DATA_HAVE_INTENSITY2@@@Z", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern Int32 UnpackMeasDataHaveIntensity2(byte[] vpucMsg, MEAS_DATA_HAVE_INTENSITY2 vpstMeasDataHaveIntensity2);
 
+        //[DllImport("Osight_LS210_DLL.dll", EntryPoint = "GetLidar", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        //public static extern Int32 GetLidar(POINT0[]  point0, MEAS_DATA_HAVE_INTENSITY2 vpstMeasDataHaveIntensity2);
+        //POINT0[] temp;
         public bool connected_;
         public int socket_fd_;
     }
