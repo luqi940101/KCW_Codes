@@ -119,9 +119,9 @@
         <Grid Background="#FF00A2FF"  Grid.Row="3" Grid.ColumnSpan="2">
             <Label Content="中煤科工集团重庆研究院有限公司研制" Margin="0,6,18,0" VerticalAlignment="Top" Foreground="White" HorizontalAlignment="Right" Width="214"/>
             <Label Content="2017-11-18  16:53:24" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Foreground="White"/>
-            <Button Name ="BtnTestStruct" Content="Test Struct" HorizontalAlignment="Left" Margin="493,7,0,0" VerticalAlignment="Top" Width="75" Click="BtnTestStruct_Click" RenderTransformOrigin="4.704,3.538"/>
             <Button Name ="BtnLidarConnect" Content="Connect Lidar" HorizontalAlignment="Left" Margin="132,6,0,0" VerticalAlignment="Top" Width="95" Click="BtnLidarConnect_Click"/>
-            <TextBox Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="232,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="256" TextChanged="LidarConnectionStatus_TextChanged"/>
+            <TextBox Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="232,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" TextChanged="LidarConnectionStatus_TextChanged"/>
+            <TextBox Name="LidarData" HorizontalAlignment="Left" Height="23" Margin="443,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="LidarData_TextChanged"/>
         </Grid>
         <Button x:Name ="BtnConnect" Content="Connect" HorizontalAlignment="Left" Margin="192,10,0,0" VerticalAlignment="Top" Width="75" Click="BtnConnect_Click" RenderTransformOrigin="1.01,0.526"/>
     </Grid>

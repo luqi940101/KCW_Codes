@@ -592,17 +592,24 @@ namespace WpfApplication4
         private static extern bool isConnected();
         [DllImport("Osight_LS210_DLL.dll", EntryPoint = "ParaSync", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern int ParaSync(ref PARA_SYNC_RSP g_stRealPara);
-        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "ParaSync", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "ParaConfiguration", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern int ParaConfiguration(ref PARA_SYNC_RSP g_stRealPara);
-        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "ParaSync", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "StartMeasureTransmission", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern void StartMeasureTransmission();
-
-
-
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "GetLidarMeasData", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int GetLidarMeasData(ref PARA_SYNC_RSP g_stRealPara, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] int[] Distance);
+        
         //LSxxx laser = new LSxxx();
         private void LS210()
         {
             PARA_SYNC_RSP g_stRealPara = new PARA_SYNC_RSP();
+            //[System.Runtime.InteropServices.MarshalAs(UnmanagedType.ByValArray, SizeConst = 2000)]
+            int[] Distance = new int[2000];
+            //MEAS_DATA_NO_INTENSITY g_stMeasDataNoIntensity = new MEAS_DATA_NO_INTENSITY();
+
+            //int[] res = new int[10];
+            //POINT0[] DataIntensity0 = new POINT0[2000];
+
             int err;
             //byte i = 0;
             string hostPC = "192.168.1.100";
@@ -686,29 +693,34 @@ namespace WpfApplication4
                         LidarConnectionStatus.Text = "Start getting the Measurements ...";
                         DoEvents();
                     }));
+                    
+                    err = GetLidarMeasData(ref g_stRealPara, Distance);
+                    //GetLidarMeasData(ref g_stRealPara, ref g_stMeasDataNoIntensity, ref g_stMeasDataHaveIntensity1, ref g_stMeasDataHaveIntensity2, ref DataIntensity0, ref DataIntensity1, ref DataIntensity2);
+                    if (0 == err)
+                    {
+                        /*test: Print receiving ridar data */
+                        for (int i = 0; i < 1080; i++)
+                        {
+                            this.Dispatcher.Invoke(new Action(delegate ()
+                            {
+                                LidarData.Text = Convert.ToString(Distance[i]);
+                                DoEvents();
+                            }));
+                            //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
+                            //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
+                            //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
+                            //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
+                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
+                            //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+                            //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+                        }
 
-                    LidarConnectionStatus.Text = "Start getting the Measurements ...";
-                    //err = LSxxx.GetLidarMeasData();
-                    //if (0 == err)
-                    //{
-                    //    /*test: Print receiving ridar data */
-                    //    for (int i = 0; i < 1080; i++)
-                    //    {
-                    //        //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
-                    //        //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
-                    //        //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
-                    //        //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
-                    //        //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-                    //        //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-                    //        //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
-                    //        //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
-                    //    }
-
-                    //}
-                    //else
-                    //{
-                    //    //break;
-                    //}
+                    }
+                    else
+                    {
+                        //break;
+                    }
 
                 }
 
@@ -729,11 +741,13 @@ namespace WpfApplication4
             System.Threading.Thread LidarThread = new System.Threading.Thread(new System.Threading.ThreadStart(LS210));
             if (!IsLidarRuning) {
                 LidarThread.Start();
-                BtnLidarConnect.Content = "Disconnect Lidar";
+                //BtnLidarConnect.Content = "Disconnect Lidar";
+                BtnLidarConnect.IsEnabled = false;
             }
             else {
                 LidarThread.Abort();
-                BtnLidarConnect.Content = "Connect Lidar";
+                DoEvents();
+                BtnLidarConnect.Content = "Connect Lidar";                
             }
             IsLidarRuning = !IsLidarRuning;
             //LS210("192.168.1.100", 5500, 0);
@@ -823,6 +837,10 @@ namespace WpfApplication4
             //MessageBox.Show(Convert.ToString(ret2));
         }
 
+        private void LidarData_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 
 }

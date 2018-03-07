@@ -129,25 +129,8 @@ int ParaSync(PARA_SYNC_RSP *g_stRealPara)
 	UINT32 ulMsgId = NULL_MSGID;
 	PARA_SYNC_REQ  stParaSynReq;
 	PARA_SYNC_RSP  stParaSynRsp;
-	/*PARA_SYNC_RSP  g_stRealPara;
-	g_stRealPara.ulMsgId = ulMsgId1;
-	g_stRealPara.usTransId = usTransId;
-	memcpy(g_stRealPara.aucMAC, aucMAC, sizeof(aucMAC));
-	g_stRealPara.ulSerialNum1 = ulSerialNum1;
-	g_stRealPara.ulSerialNum2 = ulSerialNum2;
-	g_stRealPara.ucDevNum = ucDevNum;
-	g_stRealPara.ucSoftwareVersion = ucSoftwareVersion;
-	g_stRealPara.ucIndex = ucIndex;
-	g_stRealPara.ucLineNum = ucLineNum;
-	g_stRealPara.ulStartAngle = ulStartAngle;
-	g_stRealPara.usVerticalAngle = usVerticalAngle;
-	g_stRealPara.usMaxDistance = usMaxDistance;
-	g_stRealPara.ulPointNum = ulPointNum;
-	memcpy(g_stRealPara.aucReserved, aucReserved, sizeof(aucReserved));
-	g_stRealPara.ucCurrentSpeed = ucCurrentSpeed;
-	g_stRealPara.ucIntensityStatus = ucIntensityStatus;
-	g_stRealPara.ucCurrentAreaId = ucCurrentAreaId;
-	g_stRealPara.ulAngularResolution = ulAngularResolution;*/
+
+	g_stRealPara->ulSerialNum1 = 1;
 
 	stParaSynReq.ulMsgId = PARA_SYNC_REQ_ID;
 	stParaSynReq.usTransId = 0x0505;
@@ -161,7 +144,7 @@ int ParaSync(PARA_SYNC_RSP *g_stRealPara)
 	}
 
 	memset((UINT8*)&stParaSynRsp, 0, sizeof(PARA_SYNC_RSP));
-	memset((UINT8*)&g_stRealPara, 0, sizeof(PARA_SYNC_RSP));
+	//memset((UINT8*)&g_stRealPara, 0, sizeof(PARA_SYNC_RSP));
 
 	ulSendLength = 0;
 	while (ucCount--)
@@ -175,16 +158,57 @@ int ParaSync(PARA_SYNC_RSP *g_stRealPara)
 
 			if (PARA_SYNC_RSP_ID == ulMsgId)
 			{
+				
 				UnpackParaSyncRsp((UINT8 *)&g_aucRxBuf, (PARA_SYNC_RSP *)&stParaSynRsp);
-				memcpy((UINT8*)&g_stRealPara, (UINT8*)&stParaSynRsp, sizeof(PARA_SYNC_RSP));
+				//memcpy((UINT8*)&g_stRealPara, (UINT8*)&stParaSynRsp, sizeof(PARA_SYNC_RSP));
+				g_stRealPara->ulMsgId = stParaSynRsp.ulMsgId;
+				g_stRealPara->usTransId = stParaSynRsp.usTransId;
+				g_stRealPara->aucMAC[0] = stParaSynRsp.aucMAC[0];
+				g_stRealPara->aucMAC[1] = stParaSynRsp.aucMAC[1];
+				g_stRealPara->aucMAC[2] = stParaSynRsp.aucMAC[2];
+				g_stRealPara->aucMAC[3] = stParaSynRsp.aucMAC[3];
+				g_stRealPara->aucMAC[4] = stParaSynRsp.aucMAC[4];
+				g_stRealPara->aucMAC[5] = stParaSynRsp.aucMAC[5];
+				g_stRealPara->ulSerialNum1 = stParaSynRsp.ulSerialNum1;
+				g_stRealPara->ulSerialNum2 = stParaSynRsp.ulSerialNum2;
+				g_stRealPara->ucDevNum = stParaSynRsp.ucDevNum;
+				g_stRealPara->ucSoftwareVersion = stParaSynRsp.ucSoftwareVersion;
+				g_stRealPara->ucIndex = stParaSynRsp.ucIndex;
+				g_stRealPara->ucLineNum = stParaSynRsp.ucLineNum;
+				g_stRealPara->ulStartAngle = stParaSynRsp.ulStartAngle;
+				g_stRealPara->usVerticalAngle = stParaSynRsp.usVerticalAngle;
+				g_stRealPara->usMaxDistance = stParaSynRsp.usMaxDistance;
+				g_stRealPara->ulPointNum = stParaSynRsp.ulPointNum;
+				
+				UINT8  ucIndex = 0;
+				UINT8  ucIndex1 = 0;
+
+				for (ucIndex = 0; ucIndex<sizeof(stParaSynRsp.aucReserved); ucIndex++)
+				{
+					g_stRealPara->aucReserved[ucIndex] = stParaSynRsp.aucReserved[ucIndex];
+				}
+
+				g_stRealPara->ucCurrentSpeed = stParaSynRsp.ucCurrentSpeed;
+				g_stRealPara->ucIntensityStatus = stParaSynRsp.ucIntensityStatus;
+				g_stRealPara->ucCurrentAreaId = stParaSynRsp.ucCurrentAreaId;
+				g_stRealPara->ulAngularResolution = stParaSynRsp.ulAngularResolution;
+				
+				for (ucIndex = 0; ucIndex<16; ucIndex++)
+				{
+					g_stRealPara->stAlarmArea[ucIndex].ucAreaType = stParaSynRsp.stAlarmArea[ucIndex].ucAreaType;
+					for (ucIndex1 = 0; ucIndex1<19; ucIndex1++)
+					{
+						g_stRealPara->stAlarmArea[ucIndex].aucPara[ucIndex1] = stParaSynRsp.stAlarmArea[ucIndex].aucPara[ucIndex1];
+					}
+				}
 
 				return BUSPRO_OK;
-				printf("Parameter synchronization start1\r\n");
+				
 			}
 			else
 			{
 				return BUSPRO_ERROR;
-				printf("Parameter synchronization start2\r\n");
+				
 			}
 		}
 	}
@@ -567,15 +591,18 @@ int UnpackMeasDataHaveIntensity2(UINT8 *vpucMsg, MEAS_DATA_HAVE_INTENSITY2 *vpst
 }
 
 
-
-int GetLidarMeasData(PARA_SYNC_RSP *g_stRealPara, MEAS_DATA_NO_INTENSITY *g_stMeasDataNoIntensity, MEAS_DATA_HAVE_INTENSITY1   *g_stMeasDataHaveIntensity1, MEAS_DATA_HAVE_INTENSITY2   *g_stMeasDataHaveIntensity2)
+//TO DO get the lidar data
+int GetLidarMeasData(PARA_SYNC_RSP *g_stRealPara, int *Distance)
 {
 	UINT32  ulIndex = 0;
 	INT32  ulSendLength = 0;
 	UINT32 ulMsgId = NULL_MSGID;
-
+	MEAS_DATA_NO_INTENSITY stMeasDataNoIntensity;
+	POINT0 DataIntensity[2000];
+	int Distance_test[2000] = {0}; // Change structs to arrary
 	while (1)
 	{
+		//g_stMeasDataNoIntensity->ucDevNum = 1;
 		memset(g_aucRxBuf, 0, sizeof(g_aucRxBuf));
 		ulSendLength = read_data(g_aucRxBuf, sizeof(g_aucRxBuf));
 		if (ulSendLength > VALUE_0)
@@ -588,19 +615,23 @@ int GetLidarMeasData(PARA_SYNC_RSP *g_stRealPara, MEAS_DATA_NO_INTENSITY *g_stMe
 
 				if (0x00 == g_stRealPara->ucIntensityStatus)
 				{
-					UnpackMeasDataNoIntensity((UINT8 *)&g_aucRxBuf, (MEAS_DATA_NO_INTENSITY *)&g_stMeasDataNoIntensity);
-					for (ulIndex = 0; ulIndex<g_stMeasDataNoIntensity->usPackMeasPointNum; ulIndex++)
+					//UnpackMeasDataNoIntensity((UINT8 *)&g_aucRxBuf, (MEAS_DATA_NO_INTENSITY *)&g_stMeasDataNoIntensity);
+					//UnpackMeasDataNoIntensity((UINT8 *)&g_aucRxBuf, g_stMeasDataNoIntensity);
+					UnpackMeasDataNoIntensity((UINT8 *)&g_aucRxBuf, (MEAS_DATA_NO_INTENSITY *)&stMeasDataNoIntensity);					
+					for (ulIndex = 0; ulIndex<stMeasDataNoIntensity.usPackMeasPointNum; ulIndex++)
 					{
-						DataIntensity0[g_stMeasDataNoIntensity->ucCurrentPackNO*g_stMeasDataNoIntensity->usPackMeasPointNum + ulIndex].ulDistance = g_stMeasDataNoIntensity->astPoint0[ulIndex].ulDistance;
+						DataIntensity[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex].ulDistance = stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
+						Distance_test[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex]= stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
+						Distance[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex] = stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
 						//printf("Get point0 measurement");
-						printf("DataIntensity0.ulOutputStatus=%06x\r\n\r\n", g_stMeasDataNoIntensity->ulOutputStatus);
+						//printf("DataIntensity0.ulOutputStatus=%06x\r\n\r\n", stMeasDataNoIntensity.ulOutputStatus);
 					}
-					if ((g_stMeasDataNoIntensity->ucCurrentPackNO + 1) == g_stMeasDataNoIntensity->ucTotalPackNum)
+					if ((stMeasDataNoIntensity.ucCurrentPackNO + 1) == stMeasDataNoIntensity.ucTotalPackNum)
 					{
 						return BUSPRO_OK;
 					}
 				}
-				else if (0x01 == g_stRealPara->ucIntensityStatus)
+				/*else if (0x01 == g_stRealPara->ucIntensityStatus)
 				{
 					UnpackMeasDataHaveIntensity1((UINT8 *)&g_aucRxBuf, (MEAS_DATA_HAVE_INTENSITY1 *)&g_stMeasDataHaveIntensity1);
 					for (ulIndex = 0; ulIndex<g_stMeasDataHaveIntensity1->usPackMeasPointNum; ulIndex++)
@@ -631,7 +662,7 @@ int GetLidarMeasData(PARA_SYNC_RSP *g_stRealPara, MEAS_DATA_NO_INTENSITY *g_stMe
 					{
 						return BUSPRO_OK;
 					}
-				}
+				}*/
 			}
 			else
 			{
