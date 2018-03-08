@@ -91,7 +91,6 @@
                 </ed:RegularPolygon.RenderTransform>
             </ed:RegularPolygon>
         </Grid>
-        <Image Source="1258567252218410.jpg" Stretch="Fill" Grid.Column="1" Grid.Row="1"  />
 
         <Grid Grid.Row ="2"  Grid.ColumnSpan="2" Background="#FF9DE1F5">
             <Image Source="Image1.png" Stretch="Fill" HorizontalAlignment="Left" Height="180" Width="180" Margin="10,10,0,10" />
@@ -117,12 +116,48 @@
             <Image Source="Image1.png" Stretch="Fill" HorizontalAlignment="Left" Height="180" Width="180" Margin="10,10,0,10" />
         </Grid>
         <Grid Background="#FF00A2FF"  Grid.Row="3" Grid.ColumnSpan="2">
-            <Label Content="中煤科工集团重庆研究院有限公司研制" Margin="0,6,18,0" VerticalAlignment="Top" Foreground="White" HorizontalAlignment="Right" Width="214"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="247*"/>
+                <ColumnDefinition Width="553*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="中煤科工集团重庆研究院有限公司研制" Margin="0,6,18,0" VerticalAlignment="Top" Foreground="White" HorizontalAlignment="Right" Width="214" Grid.Column="1"/>
             <Label Content="2017-11-18  16:53:24" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Foreground="White"/>
             <Button Name ="BtnLidarConnect" Content="Connect Lidar" HorizontalAlignment="Left" Margin="132,6,0,0" VerticalAlignment="Top" Width="95" Click="BtnLidarConnect_Click"/>
-            <TextBox Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="232,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" TextChanged="LidarConnectionStatus_TextChanged"/>
-            <TextBox Name="LidarData" HorizontalAlignment="Left" Height="23" Margin="443,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="LidarData_TextChanged"/>
+            <TextBox Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="232,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" TextChanged="LidarConnectionStatus_TextChanged" Grid.ColumnSpan="2"/>
+            <Button x:Name="BtnTestStruct" Content="Test Button" HorizontalAlignment="Left" Margin="225.8,4,0,0" VerticalAlignment="Top" Width="75" Height="25" RenderTransformOrigin="-0.147,0.52" Click="BtnTestStruct_Click" Grid.Column="1"/>
         </Grid>
         <Button x:Name ="BtnConnect" Content="Connect" HorizontalAlignment="Left" Margin="192,10,0,0" VerticalAlignment="Top" Width="75" Click="BtnConnect_Click" RenderTransformOrigin="1.01,0.526"/>
+        <Canvas x:Name="PointCloudCanvas" HorizontalAlignment="Left" Height="325" Grid.Row="1" VerticalAlignment="Top" Width="400" Grid.RowSpan="2" Grid.Column="1">
+            <Line x:Name="x_axis" Stroke="Black" StrokeThickness="3" X1="40" Y1="250" X2="400" Y2="250" StrokeStartLineCap="Round" Canvas.Left="-16"/>
+            <Line x:Name="y_axis" Stroke="Black" StrokeThickness="3" X1="215" Y1="280" X2="215" Y2="30" StrokeStartLineCap="Round" Canvas.Left="-16" />
+            <Path x:Name="x_axisArrow" Fill="Black" Canvas.Left="-96.2" Canvas.Top="-29.6">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="480,276" IsClosed="True">
+                            <LineSegment Point="480,284"/>
+                            <LineSegment Point="490,280"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path x:Name="y_axisArrow" Fill="Black" Canvas.Left="159.4">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="36,30" IsClosed="True">
+                            <LineSegment Point="44,30"/>
+                            <LineSegment Point="40,20"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <TextBlock x:Name="x_label" Text="x" Canvas.Left="374" Canvas.Top="251"
+                       FontFamily="Arial" FontStyle="Italic" FontSize="20"/>
+            <TextBlock x:Name="y_label" Text="y" Canvas.Left="184" Canvas.Top="7"
+                       FontFamily="Arial" FontStyle="Italic" FontSize="20"/>
+            <TextBlock x:Name="o_label" Text="o" Canvas.Left="182" Canvas.Top="251"
+                       FontFamily="Arial" FontStyle="Italic" FontSize="20"/>
+            <!--<Line x:Name="y_scale1" Stroke="Black" StrokeThickness="1" X1="40" Y1="270" X2="44" Y2="270" StrokeEndLineCap="Triangle" Canvas.Left="174"/>-->
+            <!--<Ellipse Fill="Blue" Height="8" Width="8" Canvas.Left="100" Canvas.Top="100"/>-->
+        </Canvas>
     </Grid>
 </Window>

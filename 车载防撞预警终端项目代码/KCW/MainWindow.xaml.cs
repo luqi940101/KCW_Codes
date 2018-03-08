@@ -49,7 +49,7 @@ namespace WpfApplication4
             BtnStartRead.IsEnabled = false;
             //Vehicle1.Stroke = Brushes.Red;
             //Vehicle1.Fill = Brushes.Red;
-
+            //DrawPoint();
 
 
             // dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
@@ -563,7 +563,7 @@ namespace WpfApplication4
             {
                 BtnStartRead.Content = "Stop Read";
             }
-    }
+        }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
@@ -598,13 +598,14 @@ namespace WpfApplication4
         private static extern void StartMeasureTransmission();
         [DllImport("Osight_LS210_DLL.dll", EntryPoint = "GetLidarMeasData", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern int GetLidarMeasData(ref PARA_SYNC_RSP g_stRealPara, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] int[] Distance);
-        
+
         //LSxxx laser = new LSxxx();
         private void LS210()
         {
             PARA_SYNC_RSP g_stRealPara = new PARA_SYNC_RSP();
             //[System.Runtime.InteropServices.MarshalAs(UnmanagedType.ByValArray, SizeConst = 2000)]
             int[] Distance = new int[2000];
+
             //MEAS_DATA_NO_INTENSITY g_stMeasDataNoIntensity = new MEAS_DATA_NO_INTENSITY();
 
             //int[] res = new int[10];
@@ -613,10 +614,10 @@ namespace WpfApplication4
             int err;
             //byte i = 0;
             string hostPC = "192.168.1.100";
-            
+
             Int32 portPC = 5500;
             byte IntensityStatus = 0;
-            
+
             // Create a different thread
             while (true)
             {
@@ -632,7 +633,7 @@ namespace WpfApplication4
                     LidarConnectionStatus.Text = "Network connection OK";
                     DoEvents();
                 }));
-                
+
 
                 do
                 {
@@ -643,7 +644,7 @@ namespace WpfApplication4
                     LidarConnectionStatus.Text = "Parameter synchronization OK";
                     DoEvents();
                 }));
-                
+
                 //g_stRealPara.ucIntensityStatus = 0;
                 //g_stRealPara.ucIntensityStatus = 1;
                 //g_stRealPara.ucIntensityStatus = 2;
@@ -652,39 +653,20 @@ namespace WpfApplication4
 
                 do
                 {
-                  err = ParaConfiguration(ref g_stRealPara);
+                    err = ParaConfiguration(ref g_stRealPara);
                 } while (0 != err);
                 this.Dispatcher.Invoke(new Action(delegate ()
                 {
                     LidarConnectionStatus.Text = "Parameter configuration OK";
                     DoEvents();
                 }));
-                
+
                 StartMeasureTransmission();
                 this.Dispatcher.Invoke(new Action(delegate ()
                 {
                     LidarConnectionStatus.Text = "Start getting the Measurements ...";
                     DoEvents();
                 }));
-
-                ////Alarm Area Para
-                //if ((0x00 != pAlarmPara[0]) || (0x00 != pAlarmPara[1]) || (0x00 != pAlarmPara[2]) || (0x00 != pAlarmPara[3]) || (0x00 != pAlarmPara[4]))
-                //{
-                //    g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType = pAlarmPara[1];
-                //    //printf("pAlarmPara[0]=%d\r\n",pAlarmPara[0]);
-                //    //printf("g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType=%d\r\n",g_stRealPara.stAlarmArea[pAlarmPara[0]].ucAreaType);
-                //    for (i = 0; i < 19; i++)
-                //    {
-                //        g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i] = pAlarmPara[i + 2];
-                //        //printf("g_stRealPara.stAlarmArea[%d].aucPara[%d]=%d\r\n",pAlarmPara[0],i,g_stRealPara.stAlarmArea[pAlarmPara[0]].aucPara[i]);
-                //    }
-                //}
-
-                //do
-                //{
-                //    err = Convert.ToByte(LSxxx.ParaConfiguration(g_stRealPara));
-                //} while (0 != err);
-                //MessageBox.Show("Parameter configuration OK\r\n");
 
                 while (true)
                 {
@@ -693,28 +675,56 @@ namespace WpfApplication4
                         LidarConnectionStatus.Text = "Start getting the Measurements ...";
                         DoEvents();
                     }));
-                    
+
                     err = GetLidarMeasData(ref g_stRealPara, Distance);
-                    //GetLidarMeasData(ref g_stRealPara, ref g_stMeasDataNoIntensity, ref g_stMeasDataHaveIntensity1, ref g_stMeasDataHaveIntensity2, ref DataIntensity0, ref DataIntensity1, ref DataIntensity2);
                     if (0 == err)
                     {
+
+
+                        double[] angle_deg = Enumerable.Range(0, 1080).Select(x => x * 0.25 - 45).ToArray();
                         /*test: Print receiving ridar data */
                         for (int i = 0; i < 1080; i++)
                         {
+
+                            double x_cor = Convert.ToInt16(0.01 * Distance[i] * Math.Cos(angle_deg[i] / 180 * Math.PI));
+                            double y_cor = Convert.ToInt16(0.01 * Distance[i] * Math.Sin(angle_deg[i] / 180 * Math.PI));
+
+                            Ellipse dataEllipse = new Ellipse();
+                            dataEllipse.Fill = new SolidColorBrush(Color.FromRgb(0xff, 0, 0));
+                            dataEllipse.Width = 4;
+                            dataEllipse.Height = 4;
+
+                            Canvas.SetLeft(dataEllipse, 215 + x_cor - 2);//-2是为了补偿圆点的大小，到精确的位置
+                            Canvas.SetTop(dataEllipse, 250 - y_cor - 2);
+
+                            Point point_cloud= new Point(x_cor, y_cor);
+                            
+
                             this.Dispatcher.Invoke(new Action(delegate ()
                             {
-                                LidarData.Text = Convert.ToString(Distance[i]);
-                                DoEvents();
+                                // LidarData.Text = Convert.ToString(Distance[i]);
+                                //LidarData.Text = Convert.ToString(angle_deg[i]);                                
+                                //将数据点在画布中的位置保存下来
+                                PointCloudCanvas.Children.Add(dataEllipse);
+
                             }));
-                            //printf("DataIntensity0[ %d].ulDistance=%d\r\n", i, DataIntensity0[i].ulDistance);
-                            //printf("DataIntensity1[ %d].ulDistance=%d\r\n", i, DataIntensity1[i].ulDistance);
-                            //printf("DataIntensity1[ %d].ucIntensity=%d\r\n", i, DataIntensity1[i].ucIntensity);
-                            //printf("DataIntensity2[ %d].ulDistance=%d\r\n", i, DataIntensity2[i].ulDistance);
-                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-                            //printf("DataIntensity2[ %d].usIntensity=%d\r\n\r\n", i, DataIntensity2[i].usIntensity);
-                            //printf("DataIntensity1[ %d].ulOutputStatus=%d\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
-                            //printf("DataIntensity1[ %d].ulOutputStatus=%04x\r\n\r\n", i, DataIntensity1[i].ulOutputStatus);
+
                         }
+
+                        this.Dispatcher.Invoke(new Action(delegate ()
+                        {
+                            for (int index = PointCloudCanvas.Children.Count - 1; index >= 0; index--)
+                            {
+
+                                if (PointCloudCanvas.Children[index] is Ellipse)
+                                {
+
+                                    PointCloudCanvas.Children.RemoveAt(index);
+
+                                }
+
+                            }
+                        }));
 
                     }
                     else
@@ -728,6 +738,44 @@ namespace WpfApplication4
 
         }
 
+            
+        private bool pnpoly(Point pt_test, Point[] pt_poly) {
+
+            bool flag = false;
+            double px;
+            int n_vert = pt_poly.Length;
+
+            if (n_vert <= 2) MessageBox.Show("More Poly Points Needed");
+
+            for (int i = 1; i < n_vert; i++) {
+
+                int j = i + 1;
+                if (j > n_vert) j = 1;
+
+                if (pt_test.X == pt_poly[i].X && pt_test.Y == pt_poly[i].Y || pt_test.X == pt_poly[j].X && pt_test.Y == pt_poly[j].Y)
+                {
+                    flag = true;
+                    return flag;
+                }
+
+                if ((pt_poly[i].Y < pt_test.Y && pt_poly[j].Y >= pt_test.Y) || (pt_poly[i].Y >= pt_test.Y && pt_poly[j].Y < pt_test.Y))
+                {
+                    px = pt_poly[i].X + (pt_test.Y - pt_poly[i].Y) * (pt_poly[j].X - pt_poly[i].X) / (pt_poly[j].Y - pt_poly[i].Y);
+                    if (pt_test.X < px)
+                    {
+                        flag = !flag;
+                    }
+                    else if (pt_test.X == px) {
+                        flag = true;
+                        return flag;
+
+                    }
+                }
+            }
+
+            return flag;
+        }
+      
 
         //private void test(){
         //    while(true)
@@ -752,6 +800,8 @@ namespace WpfApplication4
             IsLidarRuning = !IsLidarRuning;
             //LS210("192.168.1.100", 5500, 0);
         }
+
+
 
         private void LidarConnectionStatus_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -786,6 +836,7 @@ namespace WpfApplication4
 
         private void BtnTestStruct_Click(object sender, RoutedEventArgs e)
         {
+                  
             StringBuilder returnchar = new StringBuilder();
             StringBuilder returnchar1 = new StringBuilder();
             StringBuilder returnchar2 = new StringBuilder();
@@ -837,10 +888,8 @@ namespace WpfApplication4
             //MessageBox.Show(Convert.ToString(ret2));
         }
 
-        private void LidarData_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
+        
+               
     }
 
 }

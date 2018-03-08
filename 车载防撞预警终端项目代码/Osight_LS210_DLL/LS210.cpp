@@ -598,8 +598,8 @@ int GetLidarMeasData(PARA_SYNC_RSP *g_stRealPara, int *Distance)
 	INT32  ulSendLength = 0;
 	UINT32 ulMsgId = NULL_MSGID;
 	MEAS_DATA_NO_INTENSITY stMeasDataNoIntensity;
-	POINT0 DataIntensity[2000];
-	int Distance_test[2000] = {0}; // Change structs to arrary
+	//POINT0 DataIntensity[2000];
+	//int Distance_test[2000] = {0}; // Change structs to arrary
 	while (1)
 	{
 		//g_stMeasDataNoIntensity->ucDevNum = 1;
@@ -620,8 +620,8 @@ int GetLidarMeasData(PARA_SYNC_RSP *g_stRealPara, int *Distance)
 					UnpackMeasDataNoIntensity((UINT8 *)&g_aucRxBuf, (MEAS_DATA_NO_INTENSITY *)&stMeasDataNoIntensity);					
 					for (ulIndex = 0; ulIndex<stMeasDataNoIntensity.usPackMeasPointNum; ulIndex++)
 					{
-						DataIntensity[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex].ulDistance = stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
-						Distance_test[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex]= stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
+						//DataIntensity[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex].ulDistance = stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
+						//Distance_test[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex]= stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
 						Distance[stMeasDataNoIntensity.ucCurrentPackNO*stMeasDataNoIntensity.usPackMeasPointNum + ulIndex] = stMeasDataNoIntensity.astPoint0[ulIndex].ulDistance;
 						//printf("Get point0 measurement");
 						//printf("DataIntensity0.ulOutputStatus=%06x\r\n\r\n", stMeasDataNoIntensity.ulOutputStatus);
