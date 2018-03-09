@@ -680,39 +680,61 @@ namespace WpfApplication4
                     if (0 == err)
                     {
 
-
+                        bool warning = false;
                         double[] angle_deg = Enumerable.Range(0, 1080).Select(x => x * 0.25 - 45).ToArray();
                         /*test: Print receiving ridar data */
                         for (int i = 0; i < 1080; i++)
                         {
 
                             double x_cor = Convert.ToInt16(0.01 * Distance[i] * Math.Cos(angle_deg[i] / 180 * Math.PI));
-                            double y_cor = Convert.ToInt16(0.01 * Distance[i] * Math.Sin(angle_deg[i] / 180 * Math.PI));
-
-                            Ellipse dataEllipse = new Ellipse();
-                            dataEllipse.Fill = new SolidColorBrush(Color.FromRgb(0xff, 0, 0));
-                            dataEllipse.Width = 4;
-                            dataEllipse.Height = 4;
-
-                            Canvas.SetLeft(dataEllipse, 215 + x_cor - 2);//-2是为了补偿圆点的大小，到精确的位置
-                            Canvas.SetTop(dataEllipse, 250 - y_cor - 2);
-
-                            Point point_cloud= new Point(x_cor, y_cor);
+                            double y_cor = Convert.ToInt16(0.01 * Distance[i] * Math.Sin(angle_deg[i] / 180 * Math.PI));                   
                             
 
                             this.Dispatcher.Invoke(new Action(delegate ()
                             {
                                 // LidarData.Text = Convert.ToString(Distance[i]);
-                                //LidarData.Text = Convert.ToString(angle_deg[i]);                                
+                                //LidarData.Text = Convert.ToString(angle_deg[i]); 
+                                Ellipse dataEllipse = new Ellipse();
+                                dataEllipse.Fill = new SolidColorBrush(Color.FromRgb(0xff, 0, 0));
+                                dataEllipse.Width = 4;
+                                dataEllipse.Height = 4;
+
+                                Canvas.SetLeft(dataEllipse, 215 + x_cor - 2);//-2是为了补偿圆点的大小，到精确的位置
+                                Canvas.SetTop(dataEllipse, 250 - y_cor - 2);
+
+                                Point point_cloud = new Point(215 + x_cor, 250 - y_cor);
+                                if (pt_poly.Count>=2)
+                                {
+                                    if (pnpoly(point_cloud, pt_poly.ToArray()))
+                                    {
+
+                                        warning = true;
+
+                                    }
+                                    else
+                                    {
+                                        //polyline.Fill = null;
+
+                                    }
+                                }
+                                
                                 //将数据点在画布中的位置保存下来
                                 PointCloudCanvas.Children.Add(dataEllipse);
 
                             }));
+                            
 
                         }
 
                         this.Dispatcher.Invoke(new Action(delegate ()
                         {
+                            if (warning) {
+                                polyline.Fill = Brushes.Red;
+                            }
+                            else
+                            {
+                                polyline.Fill = null;
+                            }
                             for (int index = PointCloudCanvas.Children.Count - 1; index >= 0; index--)
                             {
 
@@ -745,12 +767,12 @@ namespace WpfApplication4
             double px;
             int n_vert = pt_poly.Length;
 
-            if (n_vert <= 2) MessageBox.Show("More Poly Points Needed");
+            if (n_vert <= 2) MessageBox.Show("Setting Warning Area");
 
-            for (int i = 1; i < n_vert; i++) {
+            for (int i = 0; i < n_vert; i++) {
 
                 int j = i + 1;
-                if (j > n_vert) j = 1;
+                if (j >= n_vert-1) j = 0;
 
                 if (pt_test.X == pt_poly[i].X && pt_test.Y == pt_poly[i].Y || pt_test.X == pt_poly[j].X && pt_test.Y == pt_poly[j].Y)
                 {
@@ -802,11 +824,77 @@ namespace WpfApplication4
         }
 
 
+        List<Point> pt_poly = new List<Point>();
+        List<Ellipse> polyEllipseList = new List<Ellipse>();
+        bool IsSettingWarningArea = false;
+        //private void PointCloudCanvas_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    if (flag == false)
+        //        return;
+        //    polyline.Points[polyline.Points.Count - 1] = e.GetPosition(PointCloudCanvas);
+        //    Console.Write (polyline.Points[polyline.Points.Count - 1]);
+        //}
 
-        private void LidarConnectionStatus_TextChanged(object sender, TextChangedEventArgs e)
+        private void PointCloudCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (IsSettingWarningArea && polyline.Points.Count <= 5)
+            {
+               
+                Ellipse polyEllipse = new Ellipse();
+                polyEllipse.Fill = new SolidColorBrush(Color.FromRgb(0xff, 0, 0));
+                polyEllipse.Width = 4;
+                polyEllipse.Height = 4;
+                Point p = Mouse.GetPosition(PointCloudCanvas);
+                Canvas.SetLeft(polyEllipse, p.X - 2);//-2是为了补偿圆点的大小，到精确的位置
+                Canvas.SetTop(polyEllipse, p.Y - 2);
+                PointCloudCanvas.Children.Add(polyEllipse);
+                //MessageBox.Show("Left Down");          
+                polyEllipseList.Add(polyEllipse);
+                pt_poly.Add(p);
+                polyline.Points.Add(p);
+                //if (polyline.Points.Count == 1)  polyline.Points.Add(p);
+                Console.WriteLine(p);
 
+                if (polyline.Points.Count == 5)
+                {
+                    polyline.Points.Add(polyline.Points[0]);
+                    IsSettingWarningArea = false;
+                    BtnSetWarningArea.IsEnabled = true;                  
+
+                }
+                
+                //PointCloudCanvas_MouseLeftButtonDown.IsEnabled = false;
+            }
+            else
+            {
+                
+            }           
+            
+            //Console.WriteLine("Left Down: " + e.GetPosition(PointCloudCanvas));
+            //Console.WriteLine(polyline.Points.Count);
+           // pt_poly.ForEach(i => Console.Write("{0}\t", i));
+            //Console.WriteLine(polyline.Points);
+            //Console.WriteLine(pt_poly[1].X);
+            //Console.WriteLine(pt_poly[1].Y);
         }
+
+        private void PointCloudCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+          
+            Console.WriteLine("Right Down: " + e.GetPosition(PointCloudCanvas));
+        }
+        private void BtnSetWarningArea_Click(object sender, RoutedEventArgs e)
+        {
+            BtnSetWarningArea.IsEnabled = false;
+            IsSettingWarningArea = true;
+            polyline.Points.Clear();
+            foreach (Ellipse ellipse in polyEllipseList) {
+                PointCloudCanvas.Children.Remove(ellipse);
+            }
+            pt_poly.Clear();
+            polyline.Fill = null;
+        }
+
 
         #endregion
         [System.Runtime.InteropServices.StructLayout(LayoutKind.Sequential)]
@@ -836,32 +924,49 @@ namespace WpfApplication4
 
         private void BtnTestStruct_Click(object sender, RoutedEventArgs e)
         {
-                  
-            StringBuilder returnchar = new StringBuilder();
-            StringBuilder returnchar1 = new StringBuilder();
-            StringBuilder returnchar2 = new StringBuilder();
-            string readchar = "Hello World";
-            string readchar1 = "Hello";
-            string readchar2 = "World";
-            char_test(readchar, returnchar, 10);
-            MessageBox.Show(Convert.ToString(returnchar));
-
-            char_test(readchar1, returnchar1, 10);
-            MessageBox.Show(Convert.ToString(returnchar1));
 
 
-            // NOT WORKING WITH EXPORT CLASS !!!!!
-            char_test(readchar2, returnchar2, 10);
-            MessageBox.Show(Convert.ToString(returnchar2));
-            // string hostPC = "192.168.1.100";
+            Point p = new Point(215,250);
+            
 
-            // //Int32 portPC = 5500;
-            //// byte IntensityStatus = 0;
+            if (pnpoly(p, pt_poly.ToArray()))
+            {
+                
+                polyline.Fill = Brushes.Red;
+                BtnTestStruct.IsEnabled = true;
+            }
+            else
+            {
+                polyline.Fill = null;               
+                BtnTestStruct.IsEnabled = true;
+            }
 
-            // // Create a different thread
-            // //while (true)
-            // //{
-            // LSxxx.connect(hostPC, 5500);
+
+            //StringBuilder returnchar = new StringBuilder();
+            //StringBuilder returnchar1 = new StringBuilder();
+            //StringBuilder returnchar2 = new StringBuilder();
+            //string readchar = "Hello World";
+            //string readchar1 = "Hello";
+            //string readchar2 = "World";
+            //char_test(readchar, returnchar, 10);
+            //MessageBox.Show(Convert.ToString(returnchar));
+
+            //char_test(readchar1, returnchar1, 10);
+            //MessageBox.Show(Convert.ToString(returnchar1));
+
+
+            //// NOT WORKING WITH EXPORT CLASS !!!!!
+            //char_test(readchar2, returnchar2, 10);
+            //MessageBox.Show(Convert.ToString(returnchar2));
+            //// string hostPC = "192.168.1.100";
+
+            //// //Int32 portPC = 5500;
+            ////// byte IntensityStatus = 0;
+
+            //// // Create a different thread
+            //// //while (true)
+            //// //{
+            //// LSxxx.connect(hostPC, 5500);
 
             //char readchar = 'a';
             //char readchar1 = 'b';
@@ -875,12 +980,12 @@ namespace WpfApplication4
             //string_test st = new string_test();
             //string_test.read_char_int(readchar, a);
 
-            int port = 1;
-            igr_gen.aa_disable = 1;
-            igr_gen.byp_ctl_v = 2;
-            igr_gen.sis.igr_a = 3;
-            int ret = struct_test(port, ref igr_gen);
-            MessageBox.Show(Convert.ToString(ret));
+            //int port = 1;
+            //igr_gen.aa_disable = 1;
+            //igr_gen.byp_ctl_v = 2;
+            //igr_gen.sis.igr_a = 3;
+            //int ret = struct_test(port, ref igr_gen);
+            //MessageBox.Show(Convert.ToString(ret));
             //igr_gen.aa_disable = 3;
             //igr_gen.byp_ctl_v = 4;
             //igr_gen.sis.igr_a = 5;
@@ -888,8 +993,7 @@ namespace WpfApplication4
             //MessageBox.Show(Convert.ToString(ret2));
         }
 
-        
-               
+     
     }
 
 }

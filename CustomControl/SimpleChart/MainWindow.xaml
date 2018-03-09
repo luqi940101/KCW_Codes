@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Canvas x:Name="chartCanvas" Margin="5" MouseDown="chartCanvas_MouseDown">
+        <Canvas x:Name="chartCanvas" Margin="5" MouseDown="chartCanvas_MouseDown" Background="White">
             <Line x:Name="x_axis" Stroke="Black" StrokeThickness="3" X1="40" Y1="280" X2="480" Y2="280" StrokeStartLineCap="Round"/>
             <Line x:Name="y_axis" Stroke="Black" StrokeThickness="3" X1="40" Y1="280" X2="40" Y2="30" StrokeStartLineCap="Round"/>
             <Path x:Name="x_axisArrow" Fill="Black">
