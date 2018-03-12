@@ -35,6 +35,17 @@ bool connected_ = false;
 
 
 
+void disconnect()
+{
+	if (connected_)
+	{
+		closesocket(server_socket_fd);
+		connected_ = false;
+	}
+	WSACleanup();
+}
+
+
 INT32 read_data(void* vpSrc, UINT16 usCnt)
 {
 	/* tcp */
@@ -298,7 +309,7 @@ int LS_connect(const char* hostPC, int portPC)
 
 	connected_ = true; 
 
-	//return 0;
+	return 0;
 }
 
 

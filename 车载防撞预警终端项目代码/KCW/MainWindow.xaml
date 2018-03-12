@@ -18,9 +18,9 @@
             <Label Content="KCW60机车防撞预警系统" HorizontalAlignment="Left" Margin="47,6.76,0,0" VerticalAlignment="Top" Foreground="White"/>
             <Image Margin="14,4,0,4" Source="Logo.ico" Stretch="Fill" Width="32" Height="32" HorizontalAlignment="Left"/>
             <Button x:Name="BtnClose" Content="x" HorizontalAlignment="Left" Margin="775,10,0,0" VerticalAlignment="Top" Width="20" Click="BtnClose_Click"/>
-            <TextBox x:Name ="CardID" HorizontalAlignment="Left" Height="23" Margin="356,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="297" TextChanged="CardID_TextChanged"/>
-            <Button x:Name="BtnStartRead" Content="Start Read" HorizontalAlignment="Left" Margin="283,10,0,0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="0.893,0.42" Click="BtnStartRead_Click"/>
-            <Button x:Name="BtnSetWarningArea" Content="Set Warning Area" HorizontalAlignment="Left" Margin="659,10,0,0" VerticalAlignment="Top" Width="110" Click="BtnSetWarningArea_Click"/>
+            <TextBox x:Name ="CardID" HorizontalAlignment="Left" Height="23" Margin="359,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="297" TextChanged="CardID_TextChanged"/>
+            <Button x:Name="BtnStartRead" Content="开始读卡" HorizontalAlignment="Left" Margin="286,10,0,0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="0.893,0.42" Click="BtnStartRead_Click"/>
+            <Button x:Name="BtnSetWarningArea" Content="设置告警区域" HorizontalAlignment="Left" Margin="659,10,0,0" VerticalAlignment="Top" Width="110" Click="BtnSetWarningArea_Click"/>
         </Grid>
         <Grid  Grid.Row="1" >
             <StackPanel  Margin="-100,0,0,0" Orientation="Vertical" >
@@ -123,11 +123,11 @@
             </Grid.ColumnDefinitions>
             <Label Content="中煤科工集团重庆研究院有限公司研制" Margin="0,6,18,0" VerticalAlignment="Top" Foreground="White" HorizontalAlignment="Right" Width="214" Grid.Column="1"/>
             <Label Content="2017-11-18  16:53:24" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Foreground="White"/>
-            <Button x:Name ="BtnLidarConnect" Content="Connect Lidar" HorizontalAlignment="Left" Margin="132,6,0,0" VerticalAlignment="Top" Width="95" Click="BtnLidarConnect_Click"/>
-            <TextBox x:Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="232,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="200" Grid.ColumnSpan="2"/>
+            <Button x:Name ="BtnLidarConnect" Content="连接激光雷达" HorizontalAlignment="Left" Margin="132,6,0,0" VerticalAlignment="Top" Width="95" Click="BtnLidarConnect_Click"/>
+            <TextBox x:Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="232,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="236" Grid.ColumnSpan="2"/>
             <Button x:Name="BtnTestStruct" Content="Test Button" HorizontalAlignment="Left" Margin="225.8,4,0,0" VerticalAlignment="Top" Width="75" Height="25" RenderTransformOrigin="-0.147,0.52" Click="BtnTestStruct_Click" Grid.Column="1"/>
         </Grid>
-        <Button x:Name ="BtnConnect" Content="Connect RFID" HorizontalAlignment="Left" Margin="189,10,0,0" VerticalAlignment="Top" Width="90" Click="BtnConnect_Click" RenderTransformOrigin="1.01,0.526"/>
+        <Button x:Name ="BtnConnect" Content="连接RFID读卡器" HorizontalAlignment="Left" Margin="189,10,0,0" VerticalAlignment="Top" Width="96" Click="BtnConnect_Click" RenderTransformOrigin="1.01,0.526"/>
         <Canvas x:Name="PointCloudCanvas" HorizontalAlignment="Left" Height="325" Grid.Row="1" VerticalAlignment="Top" Width="400" Grid.RowSpan="2" Grid.Column="1" 
                   MouseLeftButtonDown="PointCloudCanvas_MouseLeftButtonDown" MouseRightButtonDown="PointCloudCanvas_MouseRightButtonDown" Background="White">
             <Polyline x:Name="polyline" Stroke="Red" StrokeThickness="3"/>

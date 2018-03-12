@@ -137,6 +137,7 @@ namespace WpfApplication4
             {
                 this.Dispatcher.Invoke(new Action(delegate ()
                 {
+                    //MessageBox.Show("RFID读卡器未连接");
                     SystemPub.ADSio.DisConnect();
                     /*
                     if (IniSettings.HostPort == 9600)
@@ -256,9 +257,9 @@ namespace WpfApplication4
                             SystemPub.ADSio.DisConnect();
                             InitCommunication();
                             m_bStopComm = true;
-                            BtnConnect.Content = "Connect";
+                            //BtnConnect.Content = "连接RFID读卡器"; 
                             BtnConnect.Foreground = Brushes.Black;
-                            BtnStartRead.Content = "Start Read";
+                            BtnStartRead.Content = "开始读卡";
                         }
 
                         //SystemPub.ADRcp.Address = Convert.ToInt32(strInfo.Substring(29, 5));
@@ -415,16 +416,19 @@ namespace WpfApplication4
                             // tsStatusPortOpen.Text = "CONNECT";
                             // DisplayMsgString("CONNECT> Connect Succeed...   " + "(" + SystemPub.ADSio.ToString() + ")\r\n");
                             //tsmiConnect.Text = IniSettings.GetLanguageString("DIS&CONNECT", "断开(&C)");
-                            StartReadInfo();
-                            //RFID_Com_Label.Foreground = Brushes.Red;
-                            BtnConnect.Content = "Disconnect";
-                            BtnConnect.Foreground = Brushes.Red;
+                            StartReadInfo();                           
+                            BtnConnect.Content = "断开RFID读卡器";
+                            
+                            //BtnConnect.Foreground = Brushes.Red;
                             BtnStartRead.IsEnabled = true;
                         }
                         else if (e.Status == CommState.CONNECT_FAIL)
                         {
+                            BtnConnect.Content = "连接RFID读卡器";
+
+                            SystemPub.ADSio.DisConnect();
                             //m_bAlive = false;
-                            DisplayMsgString("ERROR> " + e.Msg + "(" + SystemPub.ADSio.ToString() + ")\r\n");
+                            //DisplayMsgString("ERROR> " + e.Msg + "(" + SystemPub.ADSio.ToString() + ")\r\n");
                             // tsmiConnect.Text = IniSettings.GetLanguageString("&CONNECT", "联机(&C)");
                         }
 
@@ -436,7 +440,10 @@ namespace WpfApplication4
                         if (e.Status == CommState.DISCONNECT_OK)
                         {
                             m_bAlive = false;
-                            DisplayMsgString("CONNECT> DisConnect succeed...  " + "(" + SystemPub.ADSio.ToString() + ")\r\n");
+                            BtnConnect.Content = "连接RFID读卡器";
+                            BtnStartRead.IsEnabled = false;
+                            //DisplayMsgString("CONNECT> DisConnect succeed...  " + "(" + SystemPub.ADSio.ToString() + ")\r\n");
+                            MessageBox.Show("RFID读卡器已断开");
                         }
                         else if (e.Status == CommState.DISCONNECT_EXCEPT)
                         {
@@ -510,9 +517,9 @@ namespace WpfApplication4
                 SystemPub.ADSio.DisConnect();
                 InitCommunication();
                 m_bStopComm = true;
-                BtnConnect.Content = "Connect";
+               // BtnConnect.Content = "连接RFID读卡器";
                 BtnConnect.Foreground = Brushes.Black;
-                BtnStartRead.Content = "Start Read";
+                BtnStartRead.Content = "开始读卡";
             }
             else
             {
@@ -557,11 +564,11 @@ namespace WpfApplication4
             else MessageBox.Show("Please Connect First");
             if (!IsStart)
             {
-                BtnStartRead.Content = "Start Read";
+                BtnStartRead.Content = "开始读卡";
             }
             else
             {
-                BtnStartRead.Content = "Stop Read";
+                BtnStartRead.Content = "停止读卡";
             }
         }
 
@@ -598,7 +605,8 @@ namespace WpfApplication4
         private static extern void StartMeasureTransmission();
         [DllImport("Osight_LS210_DLL.dll", EntryPoint = "GetLidarMeasData", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern int GetLidarMeasData(ref PARA_SYNC_RSP g_stRealPara, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] int[] Distance);
-
+        [DllImport("Osight_LS210_DLL.dll", EntryPoint = "disconnect", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern void disconnect();
         //LSxxx laser = new LSxxx();
         private void LS210()
         {
@@ -612,6 +620,7 @@ namespace WpfApplication4
             //POINT0[] DataIntensity0 = new POINT0[2000];
 
             int err;
+            int loop_counter=0;
             //byte i = 0;
             string hostPC = "192.168.1.100";
 
@@ -621,7 +630,19 @@ namespace WpfApplication4
             // Create a different thread
             while (true)
             {
-                LS_connect(hostPC, portPC);
+                loop_counter++;
+                err = LS_connect(hostPC, portPC);
+                if (loop_counter >= 100 && err == 1)
+                {
+                    MessageBox.Show("激光雷达未连接");
+                    IsLidarRuning = false;
+                    this.Dispatcher.Invoke(new Action(delegate ()
+                    {
+                        BtnLidarConnect.IsEnabled = true;
+                        DoEvents();
+                    }));
+                    break;
+                }
 
                 if (!isConnected())
                 {
@@ -630,7 +651,7 @@ namespace WpfApplication4
 
                 this.Dispatcher.Invoke(new Action(delegate ()
                 {
-                    LidarConnectionStatus.Text = "Network connection OK";
+                    LidarConnectionStatus.Text = "网口打开";
                     DoEvents();
                 }));
 
@@ -641,7 +662,7 @@ namespace WpfApplication4
                 } while (err != 0);
                 this.Dispatcher.Invoke(new Action(delegate ()
                 {
-                    LidarConnectionStatus.Text = "Parameter synchronization OK";
+                    LidarConnectionStatus.Text = "参数同步成功";
                     DoEvents();
                 }));
 
@@ -657,14 +678,14 @@ namespace WpfApplication4
                 } while (0 != err);
                 this.Dispatcher.Invoke(new Action(delegate ()
                 {
-                    LidarConnectionStatus.Text = "Parameter configuration OK";
+                    LidarConnectionStatus.Text = "参数配置成功";
                     DoEvents();
                 }));
 
                 StartMeasureTransmission();
                 this.Dispatcher.Invoke(new Action(delegate ()
                 {
-                    LidarConnectionStatus.Text = "Start getting the Measurements ...";
+                    LidarConnectionStatus.Text = "开始测量";
                     DoEvents();
                 }));
 
@@ -672,7 +693,7 @@ namespace WpfApplication4
                 {
                     this.Dispatcher.Invoke(new Action(delegate ()
                     {
-                        LidarConnectionStatus.Text = "Start getting the Measurements ...";
+                        LidarConnectionStatus.Text = "开始测量";
                         DoEvents();
                     }));
 
@@ -686,8 +707,8 @@ namespace WpfApplication4
                         for (int i = 0; i < 1080; i++)
                         {
 
-                            double x_cor = Convert.ToInt16(0.01 * Distance[i] * Math.Cos(angle_deg[i] / 180 * Math.PI));
-                            double y_cor = Convert.ToInt16(0.01 * Distance[i] * Math.Sin(angle_deg[i] / 180 * Math.PI));                   
+                            double x_cor = Convert.ToInt16(0.005 * Distance[i] * Math.Cos(angle_deg[i] / 180 * Math.PI)); //0.001 单位：分米
+                            double y_cor = Convert.ToInt16(0.005 * Distance[i] * Math.Sin(angle_deg[i] / 180 * Math.PI));                   
                             
 
                             this.Dispatcher.Invoke(new Action(delegate ()
@@ -695,15 +716,15 @@ namespace WpfApplication4
                                 // LidarData.Text = Convert.ToString(Distance[i]);
                                 //LidarData.Text = Convert.ToString(angle_deg[i]); 
                                 Ellipse dataEllipse = new Ellipse();
-                                dataEllipse.Fill = new SolidColorBrush(Color.FromRgb(0xff, 0, 0));
+                                dataEllipse.Fill = new SolidColorBrush(Color.FromRgb(0, 0, 0xff));
                                 dataEllipse.Width = 4;
                                 dataEllipse.Height = 4;
 
-                                Canvas.SetLeft(dataEllipse, 215 + x_cor - 2);//-2是为了补偿圆点的大小，到精确的位置
+                                Canvas.SetLeft(dataEllipse, 199 + x_cor - 2);//-2是为了补偿圆点的大小，到精确的位置
                                 Canvas.SetTop(dataEllipse, 250 - y_cor - 2);
 
                                 Point point_cloud = new Point(215 + x_cor, 250 - y_cor);
-                                if (pt_poly.Count>=2)
+                                if (pt_poly.Count==5)
                                 {
                                     if (pnpoly(point_cloud, pt_poly.ToArray()))
                                     {
@@ -811,13 +832,14 @@ namespace WpfApplication4
             System.Threading.Thread LidarThread = new System.Threading.Thread(new System.Threading.ThreadStart(LS210));
             if (!IsLidarRuning) {
                 LidarThread.Start();
-                //BtnLidarConnect.Content = "Disconnect Lidar";
+                //BtnLidarConnect.Content = "断开激光雷达";
                 BtnLidarConnect.IsEnabled = false;
             }
             else {
+                disconnect();
                 LidarThread.Abort();
                 DoEvents();
-                BtnLidarConnect.Content = "Connect Lidar";                
+                BtnLidarConnect.Content = "连接激光雷达";                
             }
             IsLidarRuning = !IsLidarRuning;
             //LS210("192.168.1.100", 5500, 0);
@@ -885,6 +907,7 @@ namespace WpfApplication4
         }
         private void BtnSetWarningArea_Click(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show("请用鼠标在白色区域点击五个点，设置告警区域");
             BtnSetWarningArea.IsEnabled = false;
             IsSettingWarningArea = true;
             polyline.Points.Clear();
