@@ -23,74 +23,7 @@
             <Button x:Name="BtnSetWarningArea" Content="设置告警区域" HorizontalAlignment="Left" Margin="659,10,0,0" VerticalAlignment="Top" Width="110" Click="BtnSetWarningArea_Click"/>
         </Grid>
         <Grid  Grid.Row="1" >
-            <StackPanel  Margin="-100,0,0,0" Orientation="Vertical" >
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-            </StackPanel>
-
-            <StackPanel  Margin="100,0,0,0"  Orientation="Vertical" >
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Rectangle Fill="White" Height="15" Stroke="Black" Width="5"/>
-                <Rectangle Fill="Black" Height="15" Stroke="Black" Width="5" />
-                <Ellipse Fill="Black" Height="38" Margin="231,0,10,0" Stroke="Black"/>
-                <Button Content="Button"/>
-                <Button Content="Button"/>
-            </StackPanel>
-            <Image Margin="10,10,0,0" Source="Image2.png" Stretch="Fill" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left" Width="30"/>
-            <ed:RegularPolygon x:Name ="Vehicle2" Fill="#FF80FF00" HorizontalAlignment="Left" Height="26" InnerRadius="1" PointCount="3" Stretch="Fill" Stroke="#FF46FF00" VerticalAlignment="Top" Width="28" Margin="236,218,0,0"/>
-            <ed:RegularPolygon  x:Name="Vehicle1"  Fill="Yellow" HorizontalAlignment="Left" Height="26" InnerRadius="1" PointCount="3" Stretch="Fill" Stroke="#FFFFE800" VerticalAlignment="Top" Width="28" Margin="135,39,0,0" RenderTransformOrigin="0.5,0.5">
-                <ed:RegularPolygon.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="179.231"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </ed:RegularPolygon.RenderTransform>
-            </ed:RegularPolygon>
+            <Image Source="1258567252218410.jpg" HorizontalAlignment="Left" Height="453" VerticalAlignment="Top" Width="595" Margin="0,0,-195,-128.2"/>
         </Grid>
 
         <Grid Grid.Row ="2"  Grid.ColumnSpan="2" Background="#FF9DE1F5">
