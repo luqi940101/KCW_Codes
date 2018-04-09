@@ -10,11 +10,11 @@
         <Canvas x:Name="PointCloudCanvas" HorizontalAlignment="Left" Height="325" VerticalAlignment="Top" Width="400" 
                   MouseLeftButtonDown="PointCloudCanvas_MouseLeftButtonDown" MouseRightButtonDown="PointCloudCanvas_MouseRightButtonDown" Background="White" Margin="205,260,0,0">
             <Polyline x:Name="polyline" Stroke="Red" StrokeThickness="3"/>
-            <Line x:Name="x_axis" Stroke="Black" StrokeThickness="3" X1="40" Y1="250" X2="400" Y2="250" StrokeStartLineCap="Round" Canvas.Left="-16"/>
-            <Line x:Name="y_axis" Stroke="Black" StrokeThickness="3" X1="215" Y1="280" X2="215" Y2="30" StrokeStartLineCap="Round" Canvas.Left="-16" />
-            <Path x:Name="x_axisArrow" Fill="Black" Canvas.Left="-96.2" Canvas.Top="-29.6" Data="M480,276 L480,284 L490,280 z"/>
-            <Path x:Name="y_axisArrow" Fill="Black" Canvas.Left="159.4" Data="M36,30 L44,30 L40,20 z"/>
-            <TextBlock x:Name="x_label" Text="x" Canvas.Left="374" Canvas.Top="251"
+            <Line x:Name="x_axis" Stroke="Black" StrokeThickness="3" X1="50" Y1="250" X2="350" Y2="250" StrokeStartLineCap="Round" Canvas.Left="0"/>
+            <Line x:Name="y_axis" Stroke="Black" StrokeThickness="3" X1="200" Y1="280" X2="200" Y2="30" StrokeStartLineCap="Round" Canvas.Left="0" />
+            <Path x:Name="x_axisArrow" Fill="Black" Canvas.Left="-130" Canvas.Top="-29.6" Data="M480,276 L480,284 L490,280 z"/>
+            <Path x:Name="y_axisArrow" Fill="Black" Canvas.Left="160" Data="M36,30 L44,30 L40,20 z"/>
+            <TextBlock x:Name="x_label" Text="x" Canvas.Left="350" Canvas.Top="250"
                        FontFamily="Arial" FontStyle="Italic" FontSize="20"/>
             <TextBlock x:Name="y_label" Text="y" Canvas.Left="184" Canvas.Top="7"
                        FontFamily="Arial" FontStyle="Italic" FontSize="20"/>
@@ -24,8 +24,16 @@
             <!--<Ellipse Fill="Blue" Height="8" Width="8" Canvas.Left="100" Canvas.Top="100"/>-->
         </Canvas>
         <Button x:Name ="BtnLidarConnect" Content="连接激光雷达" HorizontalAlignment="Left" Margin="25,620,0,0" VerticalAlignment="Top" Width="85" Click="BtnLidarConnect_Click"/>
-        <Button x:Name="BtnSetWarningArea" Content="设置告警区域" HorizontalAlignment="Left" Margin="686,28,0,0" VerticalAlignment="Top" Width="92" Click="BtnSetWarningArea_Click"/>
-        <TextBox x:Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="143,620,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="583"/>
+        <Button x:Name="BtnSetWarningArea" Content="设置告警区域" HorizontalAlignment="Left" Margin="692,48,0,0" VerticalAlignment="Top" Width="92" Click="BtnSetWarningArea_Click"/>
+        <TextBox x:Name="LidarConnectionStatus" HorizontalAlignment="Left" Height="23" Margin="143,620,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="260"/>
+        <Button x:Name="BtnClose" Content="x" HorizontalAlignment="Left" Margin="761,10,0,0" VerticalAlignment="Top" Width="20" Click="BtnClose_Click"/>
+        <TextBox x:Name="WarningCount" HorizontalAlignment="Left" Height="23" Margin="421,619,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="XCoordinate" HorizontalAlignment="Left" Height="23" Margin="42,480,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="YCoordinate" HorizontalAlignment="Left" Height="23" Margin="42,538,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Button HorizontalAlignment="Left" Margin="573,619,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click">
+            <TextBlock TextWrapping="Wrap" Text="TextBlock"/>
+        </Button>
+        <TextBox x:Name="PnPolyFlag" HorizontalAlignment="Left" Height="23" Margin="664,620,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

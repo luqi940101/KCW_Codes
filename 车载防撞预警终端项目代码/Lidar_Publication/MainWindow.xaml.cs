@@ -202,7 +202,8 @@ namespace Lidar_Publication
                     {
 
                         bool warning = false;
-                        double[] angle_deg = Enumerable.Range(0, 1080).Select(x => x * 0.25 - 45).ToArray();
+                        double[] angle_deg = Enumerable.Range(0, 1080).Select(x => x * 0.25-45).ToArray();
+                        int warning_count = 0;
                         /*test: Print receiving ridar data */
                         for (int i = 0; i < 1080; i++)
                         {
@@ -220,16 +221,22 @@ namespace Lidar_Publication
                                 dataEllipse.Width = 4;
                                 dataEllipse.Height = 4;
 
-                                Canvas.SetLeft(dataEllipse, 199 + x_cor - 2);//-2是为了补偿圆点的大小，到精确的位置
-                                Canvas.SetTop(dataEllipse, 250 - y_cor - 2);
+                                if (x_cor != 0 || y_cor != 0)
+                                {
+                                    Canvas.SetLeft(dataEllipse, 200 - x_cor - 2);//-2是为了补偿圆点的大小，到精确的位置
+                                    Canvas.SetTop(dataEllipse, 250 - y_cor - 2);
+                                }
+                                
 
-                                Point point_cloud = new Point(215 + x_cor, 250 - y_cor);
+                                Point point_cloud = new Point(200 - x_cor, 250 - y_cor);
                                 if (pt_poly.Count == 5)
                                 {
                                     if (pnpoly(point_cloud, pt_poly.ToArray()))
                                     {
 
-                                        warning = true;
+                                        //warning = true;
+                                        warning_count++;
+                                        WarningCount.Text = Convert.ToString(warning_count);
 
                                     }
                                     else
@@ -249,15 +256,16 @@ namespace Lidar_Publication
 
                         this.Dispatcher.Invoke(new Action(delegate ()
                         {
-                            if (warning)
+                            if (warning_count>=10)
                             {
-                                polyline.Fill = Brushes.Red;
+                                polyline.Fill = Brushes.Red;                                
                             }
                             else
                             {
                                 polyline.Fill = null;
                             }
-                            for (int index = PointCloudCanvas.Children.Count - 1; index >= 0; index--)
+
+                            for (int index = 0; index <= PointCloudCanvas.Children.Count - 1; index++)
                             {
 
                                 if (PointCloudCanvas.Children[index] is Ellipse)
@@ -268,6 +276,8 @@ namespace Lidar_Publication
                                 }
 
                             }
+
+                            warning_count = 0;
                         }));
 
                     }
@@ -373,6 +383,8 @@ namespace Lidar_Publication
                 polyEllipse.Width = 4;
                 polyEllipse.Height = 4;
                 Point p = Mouse.GetPosition(PointCloudCanvas);
+                XCoordinate.Text = Convert.ToString(p.X);
+                YCoordinate.Text = Convert.ToString(p.Y);
                 Canvas.SetLeft(polyEllipse, p.X - 2);//-2是为了补偿圆点的大小，到精确的位置
                 Canvas.SetTop(polyEllipse, p.Y - 2);
                 PointCloudCanvas.Children.Add(polyEllipse);
@@ -428,6 +440,28 @@ namespace Lidar_Publication
 
         #endregion
 
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            BtnClose.IsEnabled = false;
+            /*
+             if (SystemPub.ADSio.bConnected)
+             {
+                 SystemPub.ADSio.DisConnect();
+             }
+             */
+            //if (IsLidarRuning) {
+            //    BtnLidarConnect_Click(sender, e);
+            //}
+            System.Environment.Exit(0);
+            System.Windows.Application.Current.Shutdown();
+        }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Point test_p;
+            test_p.X = -101;
+            test_p.Y = 159;
+                //pnpoly(point_cloud, pt_poly.ToArray())
+        }
     }
 }
